@@ -1,3 +1,5 @@
+"use client";
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -16,11 +18,15 @@ import {
   ArrowRight,
   Search,
   Play,
-  ArrowUpRight
+  ArrowUpRight,
+  Menu,
+  X
 } from 'lucide-react';
 
 
 export default function Home() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
       {/* 1. HERO SECTION */}
@@ -48,24 +54,62 @@ export default function Home() {
             </div>
             
             <nav className="hidden lg:flex items-center gap-8 text-[13px] font-medium text-white/80">
-              <Link href="#" className="hover:text-white transition-colors">Product</Link>
-              <Link href="#" className="hover:text-white transition-colors">About Us</Link>
-              <Link href="#" className="hover:text-white transition-colors">Services</Link>
-              <Link href="#" className="hover:text-white transition-colors">Pricing</Link>
-              <Link href="#" className="hover:text-white transition-colors">Blog</Link>
+              <Link href="#features" className="hover:text-[#B7FF2A] transition-colors">Features</Link>
+              <Link href="#workflow" className="hover:text-[#B7FF2A] transition-colors">How it Works</Link>
+              <Link href="#benefits" className="hover:text-[#B7FF2A] transition-colors">Benefits</Link>
             </nav>
 
-            <Link
-              href="/login"
-              className="hidden sm:flex items-center gap-3 pl-5 pr-1 py-1 text-sm font-semibold text-black bg-white rounded-full hover:scale-105 transition-transform duration-300 shadow-xl"
-            >
-              Contact Us
-              <div className="w-8 h-8 flex items-center justify-center bg-[#063b27] rounded-full text-white">
-                <ArrowUpRight className="w-4 h-4 ml-0.5" />
-              </div>
-            </Link>
+            <div className="hidden lg:flex items-center gap-2">
+              <Link href="/login" className="flex items-center justify-center px-5 py-2 text-sm font-semibold text-white/90 hover:text-white border border-transparent hover:border-white/20 rounded-full transition-all">
+                Log In
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center gap-3 pl-5 pr-1 py-1 text-sm font-bold text-black bg-white rounded-full hover:scale-105 hover:bg-[#B7FF2A] transition-all duration-300 shadow-xl group"
+              >
+                Register
+                <div className="w-8 h-8 flex items-center justify-center bg-black group-hover:bg-[#0B4D1E] rounded-full text-white group-hover:text-[#B7FF2A] transition-colors">
+                  <ArrowUpRight className="w-4 h-4 ml-0.5" />
+                </div>
+              </Link>
+            </div>
             
+            {/* Mobile Menu Button */}
+            <button 
+              className="lg:hidden p-2 text-white hover:text-[#B7FF2A] transition-colors z-[60]"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </header>
+        </div>
+
+        {/* Mobile Sidebar Navigation */}
+        <div className={`fixed inset-0 z-50 transform transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} lg:hidden`}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="absolute top-0 right-0 h-full w-4/5 max-w-sm bg-[#021407] border-l border-white/10 p-6 flex flex-col pt-24">
+            <nav className="flex flex-col gap-6 text-xl font-bold text-white mb-12">
+              <Link href="#features" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#B7FF2A] transition-colors">Features</Link>
+              <Link href="#workflow" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#B7FF2A] transition-colors">How it Works</Link>
+              <Link href="#benefits" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#B7FF2A] transition-colors">Benefits</Link>
+            </nav>
+
+            <div className="mt-auto flex flex-col gap-4 pb-12">
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center px-5 py-3 text-base font-semibold text-white hover:bg-white/10 border border-white/20 rounded-full transition-all">
+                Log In
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex justify-center items-center gap-2 py-3 text-base font-bold text-black bg-white rounded-full hover:bg-[#B7FF2A] transition-all duration-300 group"
+              >
+                Register
+                <div className="w-8 h-8 flex items-center justify-center bg-black group-hover:bg-[#0B4D1E] rounded-full text-white group-hover:text-[#B7FF2A] transition-colors">
+                  <ArrowUpRight className="w-4 h-4 ml-0.5" />
+                </div>
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Hero Content Area */}
@@ -233,7 +277,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/60 pointer-events-none"></div>
 
         {/* 3. HOW IT WORKS SECTION (Interactive Stepper) */}
-        <section className="py-32 relative overflow-hidden bg-transparent">
+        <section id="workflow" className="py-32 relative overflow-hidden bg-transparent">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#1FAA00] rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#39C400] rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
 
@@ -383,7 +427,7 @@ export default function Home() {
         </section>
 
         {/* 5. BENEFITS SECTION (Minimalist Typography) */}
-        <section className="py-32 relative overflow-hidden bg-transparent">
+        <section id="benefits" className="py-32 relative overflow-hidden bg-transparent">
           <div className="max-w-7xl px-6 mx-auto relative z-10">
           <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-white tracking-tight">Why Choose SmartAgri?</h2>
