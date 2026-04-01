@@ -43,11 +43,8 @@ export default function Home() {
         <div className="absolute top-6 left-0 right-0 z-40 w-full px-4 md:px-12 flex justify-center">
           <header className="flex items-center justify-between w-full max-w-[1400px] px-3 py-2.5 md:px-4 md:py-3 text-white bg-black/10 backdrop-blur-md border border-white/10 rounded-full shadow-lg">
             
-            <div className="flex items-center gap-2 font-medium text-lg tracking-tight ml-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-400 to-green-500 flex items-center justify-center shadow-inner">
-                 <Leaf className="w-4 h-4 text-white" />
-              </div>
-              SmartAgri
+            <div className="flex items-center ml-2">
+              <img src="/logo.png" alt="SmartAgri Logo" className="h-10 md:h-12 w-auto object-contain rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
             </div>
             
             <nav className="hidden lg:flex items-center gap-8 text-[13px] font-medium text-white/80">
@@ -462,11 +459,8 @@ export default function Home() {
 
         {/* FOOTER */}
         <footer className="text-white/50 py-16 text-center border-t border-white/5 bg-[#021407] relative z-20">
-          <div className="flex items-center justify-center gap-2 mb-6 hover:text-white transition-colors cursor-pointer w-max mx-auto">
-            <div className="p-1.5 bg-black/30 rounded-lg">
-              <Leaf className="w-5 h-5 text-[#B7FF2A]" />
-            </div>
-            <span className="text-2xl font-black tracking-tight text-white">SmartAgri</span>
+          <div className="flex items-center justify-center mb-6 hover:scale-105 transition-transform cursor-pointer w-max mx-auto">
+            <img src="/logo.png" alt="SmartAgri Logo" className="h-16 w-auto object-contain rounded-2xl shadow-[0_5px_20px_rgba(255,255,255,0.05)]" />
           </div>
           <p className="text-sm font-medium">© {new Date().getFullYear()} SmartAgri Platform. All rights reserved. Cultivating the future.</p>
         </footer>
