@@ -139,284 +139,341 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. FEATURES SECTION */}
-      <section id="features" className="py-24 bg-backgroundSecondary text-foreground">
-        <div className="max-w-7xl px-6 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-sm font-bold tracking-widest text-textLoop uppercase mb-3">Core Features</h2>
-            <h3 className="text-3xl md:text-4xl font-bold text-textPrimary">Everything you need to grow smarter</h3>
+      {/* 2. FEATURES SECTION (Bento Grid) */}
+      <section id="features" className="py-32 bg-white relative overflow-hidden">
+        <div className="absolute -top-[300px] -right-[300px] w-[800px] h-[800px] bg-gray-50 rounded-full blur-[100px] -z-10"></div>
+        <div className="max-w-7xl px-6 mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="text-xs font-black tracking-[0.2em] text-[#008F00] uppercase mb-4">Powerful Capabilities</h2>
+            <h3 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">Intelligence at your fingertips.</h3>
+            <p className="mt-6 text-lg text-zinc-500 max-w-2xl mx-auto font-medium">Discover the precision tools empowering modern farmers to detect issues early and scale effectively without lifting a finger.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="p-8 bg-hoverPrimary rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-borderPrimary">
-              <div className="w-14 h-14 bg-backgroundSecondary rounded-xl flex items-center justify-center mb-6 text-primary shadow-sm border border-borderPrimary">
-                <Leaf className="w-8 h-8" />
+          {/* Interactive Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[320px]">
+            
+            {/* Bento 1: Large Image Feature */}
+            <div className="md:col-span-2 lg:col-span-2 row-span-1 md:row-span-2 group rounded-3xl bg-zinc-50 overflow-hidden relative border border-zinc-100 hover:border-[#1FAA00]/30 transition-all duration-500 hover:shadow-2xl">
+              <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <Image src="https://images.unsplash.com/photo-1629881622312-d04b6134dc15?q=80&w=800" alt="Crop Disease" fill className="object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-3 flex items-center gap-2">
-                Crop Disease Detection <span className="text-2xl">🌿</span>
-              </h4>
-              <p className="text-textSecondary">
-                Upload plant images and detect diseases instantly using our advanced AI computer vision models.
-              </p>
+              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col justify-end text-white">
+                <div className="w-12 h-12 bg-[#B7FF2A] rounded-xl flex items-center justify-center mb-5 text-[#0B4D1E] shadow-lg group-hover:-translate-y-2 transition-transform duration-500">
+                  <Leaf className="w-6 h-6" />
+                </div>
+                <h4 className="text-3xl font-extrabold mb-3">Instant Disease Detection</h4>
+                <p className="text-white/80 leading-relaxed font-medium max-w-sm">
+                  Upload plant images and detect diseases instantly using our advanced AI computer vision models.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-[#B7FF2A] font-bold text-sm cursor-pointer opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                  See how it works <ArrowRight className="w-4 h-4 ml-1" />
+                </div>
+              </div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="p-8 bg-hoverPrimary rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-borderPrimary">
-              <div className="w-14 h-14 bg-backgroundSecondary rounded-xl flex items-center justify-center mb-6 text-primary shadow-sm border border-borderPrimary">
-                <CloudSun className="w-8 h-8" />
+            {/* Bento 2: Weather */}
+            <div className="md:col-span-1 lg:col-span-2 row-span-1 group rounded-3xl overflow-hidden relative shadow-md hover:shadow-2xl transition-all duration-500">
+              <div className="absolute inset-0 w-full h-full">
+                <Image src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=800" alt="Weather" fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-md group-hover:bg-white/60 transition-colors duration-500"></div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-3 flex items-center gap-2">
-                Weather Forecasting <span className="text-2xl">🌦️</span>
-              </h4>
-              <p className="text-textSecondary">
-                Get real-time, hyper-local weather insights to make better and timely farming decisions.
-              </p>
+              <div className="relative p-8 flex flex-col justify-center h-full z-10">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 text-zinc-900 shadow-md group-hover:bg-[#1FAA00] group-hover:text-white transition-colors duration-300">
+                  <CloudSun className="w-5 h-5" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 mb-2">Real-time Weather Analytics</h4>
+                <p className="text-zinc-700 text-sm leading-relaxed font-medium">
+                  Hyper-local weather insights driven by precise satellite data to make timely decisions.
+                </p>
+              </div>
             </div>
 
-            {/* Feature 3 */}
-            <div className="p-8 bg-hoverPrimary rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-borderPrimary">
-              <div className="w-14 h-14 bg-backgroundSecondary rounded-xl flex items-center justify-center mb-6 text-primary shadow-sm border border-borderPrimary">
-                <BarChart className="w-8 h-8" />
+            {/* Bento 3: Yield */}
+            <div className="md:col-span-1 lg:col-span-1 row-span-1 group rounded-3xl overflow-hidden relative shadow-md hover:shadow-2xl transition-all duration-500">
+              <div className="absolute inset-0 w-full h-full">
+                <Image src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800" alt="Yield Fields" fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-[#0B4D1E]/80 backdrop-blur-sm group-hover:bg-[#0B4D1E]/60 transition-colors duration-500"></div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-3 flex items-center gap-2">
-                Yield Prediction <span className="text-2xl">📊</span>
-              </h4>
-              <p className="text-textSecondary">
-                Predict your upcoming crop yield using historical climate patterns, soil data, and machine learning.
-              </p>
+              <div className="relative p-8 flex flex-col justify-center h-full z-10 text-white">
+                <div className="w-12 h-12 bg-[#B7FF2A] rounded-xl flex items-center justify-center mb-6 text-[#0B4D1E] shadow-lg group-hover:-translate-y-1 transition-transform">
+                  <BarChart className="w-5 h-5" />
+                </div>
+                <h4 className="text-2xl font-bold mb-2 text-white">Yield Prediction</h4>
+                <p className="text-white/80 text-sm leading-relaxed font-medium">
+                  Predict upcoming crop yields using historical soil and climate patterns.
+                </p>
+              </div>
             </div>
 
-            {/* Feature 4 */}
-            <div className="p-8 bg-hoverPrimary rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-borderPrimary lg:col-start-1 lg:col-end-2">
-              <div className="w-14 h-14 bg-backgroundSecondary rounded-xl flex items-center justify-center mb-6 text-primary shadow-sm border border-borderPrimary">
-                <ShoppingCart className="w-8 h-8" />
+            {/* Bento 4: Marketplace */}
+            <div className="md:col-span-2 lg:col-span-1 row-span-1 group rounded-3xl overflow-hidden relative shadow-md hover:shadow-2xl transition-all duration-500">
+              <div className="absolute inset-0 w-full h-full">
+                <Image src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800" alt="Fresh Market" fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/50 to-zinc-900/20 group-hover:from-zinc-900/80 transition-colors duration-500"></div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-3 flex items-center gap-2">
-                Marketplace <span className="text-2xl">🛒</span>
-              </h4>
-              <p className="text-textSecondary">
-                Bypass the middlemen. Sell your crops directly to buyers and businesses at the best prices.
-              </p>
-            </div>
-
-            {/* Feature 5 */}
-            <div className="p-8 bg-hoverPrimary rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-borderPrimary lg:col-start-2 lg:col-end-4 md:col-span-2">
-              <div className="w-14 h-14 bg-backgroundSecondary rounded-xl flex items-center justify-center mb-6 text-primary shadow-sm border border-borderPrimary">
-                <Bot className="w-8 h-8" />
+              <div className="relative p-8 flex flex-col justify-end h-full z-10 text-white">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-4 text-[#B7FF2A] border border-white/20">
+                  <ShoppingCart className="w-5 h-5" />
+                </div>
+                <h4 className="text-xl font-bold text-white mb-2">Direct Marketplace</h4>
+                <p className="text-white/70 text-sm leading-relaxed font-medium mb-4">
+                  Bypass middlemen. Sell directly to verified buyers.
+                </p>
+                <div className="flex items-center gap-2 text-[#B7FF2A] font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform cursor-pointer">
+                    Explore vendors <ArrowRight className="w-4 h-4 ml-0.5" />
+                </div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-3 flex items-center gap-2">
-                AI Farming Assistant <span className="text-2xl">🤖</span>
-              </h4>
-              <p className="text-textSecondary">
-                Access a 24/7 intelligent chatbot trained on vast agricultural databases. Ask farming questions and get instant, reliable AI answers in your preferred language.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. HOW IT WORKS SECTION */}
-      <section className="py-24 bg-background border-y border-borderPrimary">
-        <div className="max-w-7xl px-6 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-4">How SmartAgri Works</h2>
-            <p className="text-lg text-textSecondary max-w-2xl mx-auto">Three simple steps to transform your farming experience.</p>
+      {/* 3. HOW IT WORKS SECTION (Interactive Stepper) */}
+      <section className="py-32 bg-zinc-50 relative border-y border-zinc-200">
+        <div className="max-w-7xl px-6 mx-auto relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-xs font-black tracking-[0.2em] text-[#008F00] uppercase mb-4">Workflow</h2>
+              <h3 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">Three steps to modern farming.</h3>
+            </div>
+            <p className="text-lg text-zinc-500 font-medium max-w-sm">A seamless, intuitive process designed to integrate directly into your daily routine.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative mt-10">
-            {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-[48px] left-[16%] right-[16%] h-1 bg-gradient-to-r from-hoverPrimary via-borderPrimary to-hoverPrimary z-0 rounded-full"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative pb-10">
+            {/* Connecting line for desktop under the cards */}
+            <div className="hidden md:block absolute bottom-[88px] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-zinc-200 via-[#1FAA00] to-zinc-200 z-0"></div>
             
             {/* Step 1 */}
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-24 h-24 bg-backgroundSecondary rounded-full flex items-center justify-center shadow-lg border-4 border-hoverPrimary mb-6 relative">
-                <span className="absolute -top-3 -right-3 w-8 h-8 bg-primary text-btnHoverText font-bold rounded-full flex items-center justify-center border-2 border-backgroundSecondary shadow-md">1</span>
-                <Camera className="w-10 h-10 text-primary" />
+            <div className="relative z-10 flex flex-col group bg-white rounded-[2rem] border border-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-[#39C400]/30 transition-all duration-500 hover:-translate-y-3 overflow-hidden">
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=600" alt="Upload Data" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                <div className="absolute top-4 right-4 text-4xl font-black text-white/50 group-hover:text-white transition-colors">01</div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-2 flex items-center gap-2 text-center justify-center">Upload Data <span className="text-xl">📸</span></h4>
-              <p className="text-textSecondary">Take a picture of your crop or input your basic farm details into the app.</p>
+              <div className="p-8 pt-6">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 text-[#0B4D1E] shadow-xl border border-zinc-100 -mt-12 relative z-20 group-hover:bg-[#0B4D1E] group-hover:text-[#B7FF2A] transition-colors duration-300">
+                  <Camera className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 mb-3">Upload your Data</h4>
+                <p className="text-zinc-500 text-base leading-relaxed font-medium">Easily take a picture of your crop or input directly into the app.</p>
+              </div>
+              {/* Timeline dot */}
+              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-zinc-200 border-4 border-white group-hover:bg-[#39C400] transition-colors duration-300 shadow-sm"></div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-24 h-24 bg-backgroundSecondary rounded-full flex items-center justify-center shadow-lg border-4 border-hoverPrimary mb-6 relative">
-                <span className="absolute -top-3 -right-3 w-8 h-8 bg-secondary text-btnHoverText font-bold rounded-full flex items-center justify-center border-2 border-backgroundSecondary shadow-md">2</span>
-                <Cpu className="w-10 h-10 text-secondary" />
+            <div className="relative z-10 flex flex-col group bg-white rounded-[2rem] border border-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-[#39C400]/30 transition-all duration-500 hover:-translate-y-3 overflow-hidden md:mt-12">
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600" alt="AI Analyzes" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                <div className="absolute top-4 right-4 text-4xl font-black text-white/50 group-hover:text-white transition-colors">02</div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-2 flex items-center gap-2 text-center justify-center">AI Analyzes <span className="text-xl">🤖</span></h4>
-              <p className="text-textSecondary">Our advanced smart models securely process your data in seconds.</p>
+              <div className="p-8 pt-6">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 text-[#006400] shadow-xl border border-zinc-100 -mt-12 relative z-20 group-hover:bg-[#0B4D1E] group-hover:text-[#B7FF2A] transition-colors duration-300">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 mb-3">AI Engine Analyzes</h4>
+                <p className="text-zinc-500 text-base leading-relaxed font-medium">Our advanced smart models process your data in seconds to find anomalies.</p>
+              </div>
+              {/* Timeline dot */}
+              <div className="absolute -bottom-10 md:bottom-auto md:-top-16 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-zinc-200 border-4 border-white group-hover:bg-[#39C400] transition-colors duration-300 shadow-sm md:mt-4"></div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-24 h-24 bg-backgroundSecondary rounded-full flex items-center justify-center shadow-lg border-4 border-hoverPrimary mb-6 relative">
-                <span className="absolute -top-3 -right-3 w-8 h-8 bg-textLoop text-btnHoverText font-bold rounded-full flex items-center justify-center border-2 border-backgroundSecondary shadow-md">3</span>
-                <Sprout className="w-10 h-10 text-textLoop" />
+            <div className="relative z-10 flex flex-col group bg-white rounded-[2rem] border border-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-[#006400] transition-all duration-500 hover:-translate-y-3 overflow-hidden">
+               <div className="relative h-48 w-full overflow-hidden">
+                <Image src="https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=600" alt="Instant Insights" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                <div className="absolute top-4 right-4 text-4xl font-black text-white/50 group-hover:text-[#B7FF2A] transition-colors">03</div>
               </div>
-              <h4 className="text-xl font-bold text-textPrimary mb-2 flex items-center gap-2 text-center justify-center">Get Insights <span className="text-xl">🌱</span></h4>
-              <p className="text-textSecondary">Receive accurate insights, market prices, and take the right action immediately.</p>
+              <div className="p-8 pt-6 bg-[#0B4D1E] h-full">
+                <div className="w-14 h-14 bg-[#B7FF2A] rounded-2xl flex items-center justify-center mb-6 text-[#0B4D1E] shadow-xl border-4 border-[#0B4D1E] -mt-12 relative z-20 transition-transform duration-300 group-hover:scale-110">
+                  <Sprout className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-white mb-3">Instant Insights</h4>
+                <p className="text-[#8EF300]/80 text-base leading-relaxed font-medium">Receive perfectly accurate insights and take the right action immediately.</p>
+              </div>
+              {/* Timeline dot */}
+              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-zinc-200 border-4 border-white group-hover:bg-[#B7FF2A] transition-colors duration-300 shadow-sm"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. DASHBOARD PREVIEW SECTION */}
-      <section className="py-24 bg-backgroundSecondary overflow-hidden">
+      {/* 4. DASHBOARD PREVIEW SECTION (Clean Interface) */}
+      <section className="py-32 bg-white overflow-hidden relative border-b border-gray-100">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[400px] bg-[#F7FAF7] rounded-[100%] blur-[80px] -z-10"></div>
         <div className="max-w-7xl px-6 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-5">Your Farming Command Center</h2>
-            <p className="text-lg text-textSecondary max-w-2xl mx-auto">Everything you need to manage your farm in one beautifully designed dashboard.</p>
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-zinc-900 mb-6 tracking-tight">Your Farming Command Center</h2>
+            <p className="text-xl text-zinc-500 max-w-2xl mx-auto">Everything you need to manage your farm in one beautifully designed intelligent interface.</p>
           </div>
 
           <div className="relative max-w-5xl mx-auto">
-            {/* Background decorative blob */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hoverPrimary/80 rounded-full blur-3xl -z-10"></div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            {/* Interactive Dashboard Container */}
+            <div className="p-4 md:p-8 bg-white/50 backdrop-blur-3xl rounded-[3rem] shadow-[0_20px_80px_rgba(0,0,0,0.07)] border border-white relative group">
               
-              {/* Main disease panel mock */}
-              <div className="md:col-span-7 bg-background p-6 rounded-2xl shadow-xl border border-borderPrimary flex flex-col gap-4 transform transition-transform hover:-translate-y-1">
-                <div className="flex justify-between items-center pb-4 border-b border-borderPrimary">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-hoverPrimary text-primary rounded-xl">
-                      <Leaf className="w-5 h-5" />
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                
+                {/* Main disease panel mock */}
+                <div className="md:col-span-7 bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 flex flex-col gap-6 transform transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)]">
+                  <div className="flex justify-between items-center pb-5 border-b border-zinc-100">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-[#F0FAF0] text-[#006400] rounded-2xl">
+                        <Leaf className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h5 className="font-bold text-zinc-900 text-lg leading-tight">Disease Scan Result</h5>
+                        <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Today, 09:41 AM</span>
+                      </div>
                     </div>
-                    <div>
-                      <h5 className="font-bold text-textPrimary leading-tight">Disease Scan Result</h5>
-                      <span className="text-xs font-medium text-textSecondary">Today, 09:41 AM</span>
+                    <span className="px-4 py-1.5 bg-red-50 text-red-600 text-xs font-black uppercase tracking-wider rounded-full border border-red-100">High Risk</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-6 items-center">
+                    <div className="w-full sm:w-36 h-36 bg-zinc-50 rounded-2xl overflow-hidden relative shrink-0 border border-zinc-200">
+                      <Image src="https://images.unsplash.com/photo-1592982537447-6f296d9b24b4?q=80&w=200" alt="Blight" fill className="object-cover" />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center w-full">
+                      <h6 className="font-extrabold text-zinc-900 mb-2 text-2xl">Tomato Blight Detected</h6>
+                      <p className="text-sm font-bold text-[#1FAA00] mb-4 uppercase tracking-wider">AI Confidence: 94.2%</p>
+                      <div className="w-full bg-zinc-100 h-2.5 rounded-full overflow-hidden shadow-inner">
+                        <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 w-[94%] h-full rounded-full"></div>
+                      </div>
                     </div>
                   </div>
-                  <span className="px-3 py-1 bg-destructive/10 text-destructive text-xs font-bold rounded-full border border-destructive/20">High Risk</span>
                 </div>
-                <div className="flex gap-4 items-center">
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 bg-backgroundSecondary rounded-xl overflow-hidden relative shrink-0 shadow-inner">
-                    <div className="absolute inset-0 bg-secondary opacity-60"></div>
-                    <Leaf className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-btnHoverText opacity-80" />
+
+                <div className="md:col-span-5 flex flex-col gap-6">
+                  {/* Weather panel mock */}
+                  <div className="bg-zinc-900 p-8 rounded-3xl shadow-xl text-white transform transition-transform duration-500 group-hover:-translate-y-2 relative overflow-hidden group/weather">
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-[#39C400] rounded-full blur-[80px] opacity-20 -translate-y-1/2 translate-x-1/2 group-hover/weather:opacity-40 transition-opacity duration-700"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                      <div>
+                        <h5 className="font-bold text-white/60 text-sm tracking-wider uppercase mb-2">Farm Weather</h5>
+                        <h2 className="text-5xl font-black text-white">28°C</h2>
+                      </div>
+                      <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
+                        <CloudSun className="w-6 h-6 text-[#B7FF2A]" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-sm text-white/70 pt-4 border-t border-white/10 font-medium relative z-10">
+                      <span>Humidity: 65%</span>
+                      <span className="text-[#B7FF2A] font-bold">Rain in 2h</span>
+                    </div>
                   </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <h6 className="font-bold text-textPrimary mb-1 text-lg">Tomato Blight Detected 🌿</h6>
-                    <p className="text-sm font-medium text-textSecondary mb-3">Confidence: 94.2%</p>
-                    <div className="w-full bg-backgroundSecondary h-2.5 rounded-full overflow-hidden shadow-inner border border-borderPrimary">
-                      <div className="bg-destructive w-[94%] h-full rounded-full"></div>
+
+                  {/* Marketplace panel mock */}
+                  <div className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 transform transition-transform duration-500 group-hover:-translate-y-2">
+                    <div className="flex items-center gap-4 mb-6 pb-4 border-b border-zinc-100">
+                      <div className="p-3 bg-zinc-50 text-zinc-900 rounded-2xl border border-zinc-200/50">
+                        <ShoppingCart className="w-5 h-5" />
+                      </div>
+                      <h5 className="font-bold text-zinc-900 text-lg">Active Offers</h5>
+                    </div>
+                    <div className="flex justify-between items-center py-4 px-5 bg-zinc-50 rounded-2xl mb-3 border border-zinc-200/50 hover:bg-[#F0FAF0] hover:border-[#39C400]/30 transition-colors cursor-pointer">
+                      <span className="text-sm font-bold text-zinc-900">100kg Tomatoes</span>
+                      <span className="text-sm font-black text-[#006400] bg-white px-3 py-1 rounded-lg border border-zinc-100 shadow-sm">$120.00</span>
+                    </div>
+                    <div className="flex justify-between items-center py-4 px-5 bg-zinc-50 rounded-2xl border border-zinc-200/50 hover:bg-[#F0FAF0] hover:border-[#39C400]/30 transition-colors cursor-pointer">
+                      <span className="text-sm font-bold text-zinc-900">50kg Rice</span>
+                      <span className="text-sm font-black text-[#006400] bg-white px-3 py-1 rounded-lg border border-zinc-100 shadow-sm">$45.00</span>
                     </div>
                   </div>
                 </div>
+
               </div>
-
-              <div className="md:col-span-5 flex flex-col gap-6">
-                {/* Weather panel mock */}
-                <div className="bg-secondary p-6 rounded-2xl shadow-xl text-btnHoverText transform transition-transform hover:-translate-y-1">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h5 className="font-medium text-background mb-1">Farm Weather <span className="text-lg">🌦️</span></h5>
-                      <h2 className="text-4xl md:text-5xl font-bold text-btnHoverText">28°C</h2>
-                    </div>
-                    <div className="p-2 bg-backgroundSecondary/20 rounded-xl backdrop-blur-sm">
-                      <CloudSun className="w-10 h-10 text-textLoop" />
-                    </div>
-                  </div>
-                  <div className="flex justify-between text-sm text-background pt-4 border-t border-background/20 font-medium">
-                    <span>Humidity: 65%</span>
-                    <span>Rain expected in 2h</span>
-                  </div>
-                </div>
-
-                {/* Marketplace panel mock */}
-                <div className="bg-background p-6 rounded-2xl shadow-xl border border-borderPrimary transform transition-transform hover:-translate-y-1">
-                  <div className="flex items-center gap-3 mb-4 pb-2 border-b border-borderPrimary">
-                    <div className="p-2.5 bg-hoverPrimary text-primary rounded-xl">
-                      <ShoppingCart className="w-5 h-5" />
-                    </div>
-                    <h5 className="font-bold text-textPrimary">Active Requests 🛒</h5>
-                  </div>
-                  <div className="flex justify-between items-center py-2.5 px-3.5 bg-backgroundSecondary rounded-xl mb-3 border border-borderPrimary transition-colors hover:bg-hoverPrimary">
-                    <span className="text-sm font-semibold text-textPrimary">100kg Tomatoes</span>
-                    <span className="text-sm font-bold text-primary bg-hoverPrimary px-2.5 py-1 rounded-md border border-borderPrimary/50">$120.00</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2.5 px-3.5 bg-backgroundSecondary rounded-xl border border-borderPrimary transition-colors hover:bg-hoverPrimary">
-                    <span className="text-sm font-semibold text-textPrimary">50kg Rice</span>
-                    <span className="text-sm font-bold text-primary bg-hoverPrimary px-2.5 py-1 rounded-md border border-borderPrimary/50">$45.00</span>
-                  </div>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. BENEFITS SECTION */}
-      <section className="py-24 bg-card text-card-foreground relative overflow-hidden border-y border-borderPrimary">
-        {/* Decorative background shapes */}
-        <div className="absolute top-0 right-0 -mt-32 -mr-32 w-96 h-96 bg-hoverPrimary rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-0 left-0 -mb-32 -ml-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-60"></div>
-        
+      {/* 5. BENEFITS SECTION (Minimalist Typography) */}
+      <section className="py-32 bg-zinc-50 relative overflow-hidden">
         <div className="max-w-7xl px-6 mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-sm text-textPrimary">Why Choose SmartAgri?</h2>
-            <p className="text-textSecondary text-lg max-w-2xl mx-auto">Measurable results that matter to your livelihood and farming future.</p>
+          <div className="text-center mb-24">
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-zinc-900 tracking-tight">Why Choose SmartAgri?</h2>
+            <p className="text-zinc-500 text-xl max-w-2xl mx-auto font-medium">Measurable results that matter to your livelihood and farming future.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-backgroundSecondary/60 backdrop-blur-md p-8 rounded-2xl border border-borderPrimary text-center hover:bg-hoverPrimary/60 transition-all hover:-translate-y-2 shadow-xl">
-              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 text-btnHoverText shadow-lg rotate-3">
-                <TrendingUp className="w-8 h-8" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div className="group overflow-hidden rounded-[2rem] shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative h-[380px]">
+              <Image src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=600" alt="Increase Yield" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col justify-end">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 text-white border border-white/20 group-hover:bg-[#39C400] transition-colors duration-300">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold mb-2 text-white">Increase Yield</h4>
+                <p className="text-white/80 text-sm font-medium leading-relaxed">Optimize your harvest with data-driven predictions.</p>
               </div>
-              <h4 className="text-xl font-bold mb-2 text-textPrimary">Increase Yield <span className="text-xl">🌾</span></h4>
-              <p className="text-textSecondary text-sm font-medium leading-relaxed">Optimize your harvest with data-driven predictions and smart farming.</p>
             </div>
-            <div className="bg-backgroundSecondary/60 backdrop-blur-md p-8 rounded-2xl border border-borderPrimary text-center hover:bg-hoverPrimary/60 transition-all hover:-translate-y-2 shadow-xl">
-              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 text-btnHoverText shadow-lg -rotate-3">
-                <ShieldCheck className="w-8 h-8" />
+
+            <div className="group overflow-hidden rounded-[2rem] shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative h-[380px]">
+              <Image src="https://images.unsplash.com/photo-1530836369250-ef71a3a5e48c?q=80&w=600" alt="Stop Diseases" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col justify-end">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 text-white border border-white/20 group-hover:bg-[#1FAA00] transition-colors duration-300">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold mb-2 text-white">Stop Diseases</h4>
+                <p className="text-white/80 text-sm font-medium leading-relaxed">Catch crop health issues early to protect your fields.</p>
               </div>
-              <h4 className="text-xl font-bold mb-2 text-textPrimary">Reduce Diseases <span className="text-xl">🌿</span></h4>
-              <p className="text-textSecondary text-sm font-medium leading-relaxed">Catch crop health issues early before they spread and protect your investment.</p>
             </div>
-            <div className="bg-backgroundSecondary/60 backdrop-blur-md p-8 rounded-2xl border border-borderPrimary text-center hover:bg-hoverPrimary/60 transition-all hover:-translate-y-2 shadow-xl">
-              <div className="w-16 h-16 bg-textLoop rounded-2xl flex items-center justify-center mx-auto mb-6 text-btnHoverText shadow-lg rotate-3">
-                <Coins className="w-8 h-8" />
+
+            <div className="group overflow-hidden rounded-[2rem] shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative h-[380px]">
+              <Image src="https://images.unsplash.com/photo-1556155092-490a1ba16284?q=80&w=600" alt="Higher Profit" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col justify-end">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 text-white border border-white/20 group-hover:bg-[#B7FF2A] group-hover:text-[#0B4D1E] transition-colors duration-300">
+                  <Coins className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold mb-2 text-white">Higher Profit</h4>
+                <p className="text-white/80 text-sm font-medium leading-relaxed">Better yields and direct sales equal much higher profits.</p>
               </div>
-              <h4 className="text-xl font-bold mb-2 text-textPrimary">Increase Income <span className="text-xl">💰</span></h4>
-              <p className="text-textSecondary text-sm font-medium leading-relaxed">Better yield and direct sales means significantly more profit for your family.</p>
             </div>
-            <div className="bg-backgroundSecondary/60 backdrop-blur-md p-8 rounded-2xl border border-borderPrimary text-center hover:bg-hoverPrimary/60 transition-all hover:-translate-y-2 shadow-xl">
-              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 text-btnHoverText shadow-lg -rotate-3">
-                <Users className="w-8 h-8" />
+
+            <div className="group overflow-hidden rounded-[2rem] shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative h-[380px]">
+              <Image src="https://images.unsplash.com/photo-1628102491629-77858c6530a6?q=80&w=600" alt="No Middlemen" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent flex flex-col justify-end p-8 w-full">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 text-white border border-white/20 group-hover:bg-[#0B4D1E] transition-colors duration-300">
+                  <Users className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold mb-2 text-white">No Middlemen</h4>
+                <p className="text-white/80 text-sm font-medium leading-relaxed">Connect straight to verifiable buyers for top prices.</p>
               </div>
-              <h4 className="text-xl font-bold mb-2 text-textPrimary">No Middlemen <span className="text-xl">🛒</span></h4>
-              <p className="text-textSecondary text-sm font-medium leading-relaxed">Connect directly to end buyers in our verified marketplace for best prices.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. CALL TO ACTION SECTION */}
-      <section className="py-24 relative overflow-hidden bg-primary">
-        <div className="absolute inset-0 bg-[url('/paddy_field.jpg')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
+      {/* 6. CALL TO ACTION SECTION (High Contrast) */}
+      <section className="py-40 relative overflow-hidden bg-[#0B4D1E]">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#1FAA00] rounded-full blur-[150px] opacity-20 -z-10 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#B7FF2A] rounded-full blur-[150px] opacity-10 -z-10 -translate-x-1/2 translate-y-1/2"></div>
         <div className="max-w-4xl px-6 mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight drop-shadow-sm text-btnHoverText">Start your smart farming journey today</h2>
-          <p className="text-xl text-background mb-10 max-w-2xl mx-auto font-medium">
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tight text-white leading-tight">Start your smart farming journey today.</h2>
+          <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto font-medium">
             Join thousands of modern farmers increasing their yield and profits through the power of AI.
           </p>
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-primary transition-all bg-backgroundSecondary rounded-full hover:bg-hoverPrimary hover:scale-105 shadow-2xl"
+            className="group inline-flex items-center justify-center px-10 py-5 text-lg font-black text-[#0B4D1E] transition-all bg-[#B7FF2A] rounded-full hover:bg-white hover:scale-105 shadow-[0_10px_40px_rgba(183,255,42,0.3)]"
           >
-            Launch Dashboard <ArrowRight className="w-6 h-6 ml-2" />
+            Launch Dashboard <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-foreground text-backgroundSecondary py-12 text-center border-t border-borderPrimary">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="p-1.5 bg-primary/20 rounded-lg">
-            <Leaf className="w-6 h-6 text-primary" />
+      <footer className="bg-zinc-950 text-zinc-400 py-16 text-center border-t border-zinc-900">
+        <div className="flex items-center justify-center gap-2 mb-6 hover:text-white transition-colors cursor-pointer w-max mx-auto">
+          <div className="p-1.5 bg-zinc-900 rounded-lg">
+            <Leaf className="w-5 h-5 text-[#B7FF2A]" />
           </div>
-          <span className="text-xl font-bold tracking-tight">SmartAgri</span>
+          <span className="text-2xl font-black tracking-tight text-white">SmartAgri</span>
         </div>
-        <p className="text-sm opacity-80">© {new Date().getFullYear()} SmartAgri Platform. All rights reserved.</p>
+        <p className="text-sm font-medium">© {new Date().getFullYear()} SmartAgri Platform. All rights reserved. Cultivating the future.</p>
       </footer>
     </div>
   );
