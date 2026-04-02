@@ -28,9 +28,15 @@ export default function RegisterPage() {
     password: '',
     phone: '',
     location: '',
+    // Farmer fields
     farmSize: '',
     cropTypes: '',
-    businessName: ''
+    experience: '',
+    farmLocationDetails: '',
+    // Buyer fields
+    businessName: '',
+    buyingPurpose: '',
+    preferredCropTypes: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,11 +84,46 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    // Simulate API Call
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:8080/govisaviya/api/v1/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          location: formData.location,
+          roleName: role?.toUpperCase(),
+          // Farmer fields
+          farmSize: formData.farmSize,
+          cropTypes: formData.cropTypes,
+          experience: formData.experience ? parseInt(formData.experience) : null,
+          farmLocationDetails: formData.farmLocationDetails,
+          // Buyer fields
+          businessName: formData.businessName,
+          buyingPurpose: formData.buyingPurpose,
+          preferredCropTypes: formData.preferredCropTypes
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      setStep(3);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
       setLoading(false);
-      setStep(3); // Success step
-    }, 2000);
+    }
   };
 
   return (
