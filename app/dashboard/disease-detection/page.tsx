@@ -45,7 +45,7 @@ export default function DiseaseDetectionPage() {
             onDragLeave={() => setIsHovering(false)}
             onDrop={(e) => { e.preventDefault(); setIsHovering(false); }}
           >
-            <div className={`p-5 rounded-full mb-6 transition-colors duration-300 ${isHovering ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'bg-hoverPrimary text-primary border border-primary/10'}`}>
+            <div className={`p-5 rounded-full mb-6 transition-colors duration-300 ${isHovering ? 'bg-primary text-backgroundSecondary shadow-lg shadow-primary/25' : 'bg-hoverPrimary text-primary border border-primary/10'}`}>
               <UploadCloud className="h-10 w-10" />
             </div>
             
@@ -55,7 +55,7 @@ export default function DiseaseDetectionPage() {
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <button className="px-6 py-3 rounded-xl bg-primary text-white font-bold shadow-md hover:shadow-xl hover:bg-hover hover:-translate-y-0.5 transition-all flex items-center">
+              <button className="px-6 py-3 rounded-xl bg-primary text-backgroundSecondary font-bold shadow-md hover:shadow-xl hover:bg-hover hover:-translate-y-0.5 transition-all flex items-center border border-primary">
                 <ImageIcon className="h-5 w-5 mr-2" />
                 Browse Files
               </button>
@@ -72,7 +72,7 @@ export default function DiseaseDetectionPage() {
 
           {/* AI Tips Section */}
           <div className="rounded-3xl border border-borderPrimary bg-backgroundSecondary p-6 sm:p-8 shadow-sm flex items-start gap-4">
-            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl shrink-0 border border-blue-100 dark:border-blue-800">
+            <div className="p-3 bg-hoverPrimary text-primary rounded-2xl shrink-0 border border-primary/10">
               <Info className="h-6 w-6" />
             </div>
             <div>
@@ -128,9 +128,9 @@ export default function DiseaseDetectionPage() {
                     </span>
                   </div>
                   <div className={`p-2 rounded-lg ${
-                    scan.status === 'healthy' ? 'bg-primary/10 text-primary border border-primary/20' : 
-                    scan.status === 'warning' ? 'bg-orange-50 text-orange-600 border border-orange-200' : 
-                    'bg-red-50 text-red-600 border border-red-200'
+                    scan.status === 'healthy' ? 'bg-hoverPrimary text-primary border border-primary/20' : 
+                    scan.status === 'warning' ? 'bg-secondary/10 text-secondary border border-secondary/20' : 
+                    'bg-destructive/10 text-destructive border border-destructive/20'
                   }`}>
                     {scan.status === 'healthy' ? <CheckCircle className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}
                   </div>
@@ -139,8 +139,8 @@ export default function DiseaseDetectionPage() {
                 <div className="bg-background px-3 py-2 rounded-xl flex items-center justify-between border border-borderPrimary/50">
                   <span className={`text-sm font-bold ${
                     scan.status === 'healthy' ? 'text-primary' : 
-                    scan.status === 'warning' ? 'text-orange-600' : 
-                    'text-red-500'
+                    scan.status === 'warning' ? 'text-secondary' : 
+                    'text-destructive'
                   }`}>
                     {scan.diagnosis}
                   </span>

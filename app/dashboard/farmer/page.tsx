@@ -116,9 +116,9 @@ export default function FarmerDashboard() {
             trend: "3 urgent",
             trendUp: false,
             icon: PackageCheck,
-            color: "text-orange-500",
-            bg: "bg-orange-500/10",
-            trendColor: "text-orange-500"
+            color: "text-secondary",
+            bg: "bg-secondary/10",
+            trendColor: "text-secondary"
           },
           {
             title: "Yield Forecast",
@@ -189,7 +189,7 @@ export default function FarmerDashboard() {
                         <span className="text-xs font-medium text-textSecondary bg-background px-2 py-0.5 rounded-md border border-borderPrimary">
                           Stage: {crop.stage}
                         </span>
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-md border ${crop.health === 'Needs Water' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-md border ${crop.health === 'Needs Water' ? 'bg-secondary/10 text-secondary border-secondary/20' : 'bg-primary/10 text-primary border-primary/20'}`}>
                           Health: {crop.health}
                         </span>
                       </div>
@@ -241,7 +241,7 @@ export default function FarmerDashboard() {
                   <span className="text-sm font-bold text-textPrimary">{item.price}</span>
                   <span className={`text-xs px-2.5 py-1 rounded-lg font-bold w-16 text-center shadow-sm ${
                     item.trend === 'up' ? 'bg-primary/10 text-primary border border-primary/20' :
-                    item.trend === 'down' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
+                    item.trend === 'down' ? 'bg-destructive/10 text-destructive border border-destructive/20' :
                     'bg-hoverPrimary text-textSecondary border border-borderPrimary'
                   }`}>
                     {item.trend === 'up' && '▲ '}{item.trend === 'down' && '▼ '}{item.change}
