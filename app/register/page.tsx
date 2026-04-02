@@ -28,9 +28,15 @@ export default function RegisterPage() {
     password: '',
     phone: '',
     location: '',
+    // Farmer fields
     farmSize: '',
     cropTypes: '',
-    businessName: ''
+    experience: '',
+    farmLocationDetails: '',
+    // Buyer fields
+    businessName: '',
+    buyingPurpose: '',
+    preferredCropTypes: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +96,16 @@ export default function RegisterPage() {
           password: formData.password,
           phone: formData.phone,
           location: formData.location,
-          roleName: role?.toUpperCase()
+          roleName: role?.toUpperCase(),
+          // Farmer fields
+          farmSize: formData.farmSize,
+          cropTypes: formData.cropTypes,
+          experience: formData.experience ? parseInt(formData.experience) : null,
+          farmLocationDetails: formData.farmLocationDetails,
+          // Buyer fields
+          businessName: formData.businessName,
+          buyingPurpose: formData.buyingPurpose,
+          preferredCropTypes: formData.preferredCropTypes
         }),
       });
 
