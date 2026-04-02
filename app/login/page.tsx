@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Leaf } from 'lucide-react';
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,11 +33,47 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    
+    try {
+      const response = await fetch('http://localhost:8080/govisaviya/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Invalid email or password');
+      }
+
+      // Store auth data
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userName', data.fullName);
+        localStorage.setItem('userRoles', JSON.stringify(data.roles));
+      }
+
+      // Role-based redirection
+      const roles = data.roles || [];
+      if (roles.includes('ADMIN')) {
+        router.push('/dashboard/admin');
+      } else if (roles.includes('FARMER')) {
+        router.push('/dashboard/farmer');
+      } else if (roles.includes('BUYER')) {
+        router.push('/dashboard/buyer');
+      } else {
+        router.push('/dashboard');
+      }
+
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+    } finally {
       setLoading(false);
-      setError('Invalid email or password. Please try again.');
-    }, 1500);
+    }
   };
 
   return (
