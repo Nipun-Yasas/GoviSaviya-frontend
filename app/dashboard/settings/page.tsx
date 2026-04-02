@@ -13,7 +13,8 @@ import {
   LogOut,
   Settings as SettingsIcon,
   Languages,
-  CheckCircle2
+  CheckCircle2,
+  Sun
 } from "lucide-react";
 
 export default function SettingsPage() {
