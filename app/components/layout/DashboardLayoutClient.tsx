@@ -20,7 +20,7 @@ export function DashboardLayoutClient({
   else if (pathname.includes("/dashboard/farmer")) role = "farmer";
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="flex min-h-screen bg-[var(--background)] font-sans text-textPrimary">
       <Sidebar 
         role={role}
         isOpen={sidebarOpen} 
@@ -30,7 +30,7 @@ export function DashboardLayoutClient({
       <div className="flex flex-1 flex-col overflow-hidden">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
         
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50/50 p-4 pt-6 transition-all duration-300 dark:bg-slate-950/50 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-6 transition-all duration-300 sm:p-6 lg:p-8 bg-transparent">
           <div className="mx-auto max-w-7xl">
             {children}
           </div>
