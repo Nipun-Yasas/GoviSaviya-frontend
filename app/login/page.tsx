@@ -14,7 +14,6 @@ export default function LoginPage() {
     e.preventDefault();
     setErrors({});
     setError('');
-    
     const newErrors: { email?: string; password?: string } = {};
     if (!email) {
       newErrors.email = 'Email address is required';

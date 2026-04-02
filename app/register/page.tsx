@@ -45,7 +45,6 @@ export default function RegisterPage() {
     setError('');
     setStep(2);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
