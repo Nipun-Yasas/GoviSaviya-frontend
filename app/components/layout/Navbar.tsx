@@ -24,55 +24,56 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
   if (!mounted) {
     return (
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-green-200/50 bg-white/80 px-4 py-3 backdrop-blur-md dark:border-green-800/30 dark:bg-green-950/80 sm:px-6">
+      <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between border-b border-borderPrimary bg-backgroundSecondary px-6 py-4 dark:bg-backgroundSecondary sm:px-8">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 lg:hidden" />
+          <div className="h-11 w-11 rounded-2xl bg-input lg:hidden animate-pulse" />
         </div>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800" />
-          <div className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800" />
-          <div className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800" />
+        <div className="flex items-center gap-4 sm:gap-6">
+          <div className="h-11 w-11 rounded-2xl bg-input animate-pulse" />
+          <div className="h-11 w-11 rounded-2xl bg-input animate-pulse" />
+          <div className="h-11 w-11 rounded-2xl bg-input animate-pulse" />
         </div>
       </header>
     );
   }
   
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-green-200/50 bg-white/80 px-4 py-3 backdrop-blur-md dark:border-green-800/30 dark:bg-green-950/80 sm:px-6">
+    <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between border-b border-borderPrimary bg-backgroundSecondary/80 px-6 py-4 backdrop-blur-xl dark:bg-backgroundSecondary/90 sm:px-8">
       <div className="flex items-center gap-4">
         <button
+          type="button"
           onClick={onMenuClick}
-          className="rounded-md p-2 text-green-700 transition-colors hover:bg-green-100 hover:text-green-900 focus:outline-none dark:text-green-400 dark:hover:bg-green-900 dark:hover:text-green-50 lg:hidden"
+          className="group flex h-11 w-11 items-center justify-center rounded-2xl bg-input text-textSecondary transition-all hover:bg-hoverPrimary hover:text-primary active:scale-90 lg:hidden cursor-pointer"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-6 w-6 transition-transform group-hover:rotate-12 pointer-events-none" />
         </button>
       </div>
 
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-4 sm:gap-6">
         {/* Dark Mode Toggle */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full p-2 text-green-700 transition-all hover:bg-green-100 hover:text-green-900 dark:text-green-400 dark:hover:bg-green-900 dark:hover:text-green-50"
+          className="group flex h-11 w-11 items-center justify-center rounded-2xl bg-input text-textSecondary transition-all hover:bg-hoverPrimary hover:text-primary active:scale-95"
           aria-label="Toggle Theme"
         >
           {theme === "dark" ? (
-            <Sun className="h-5 w-5" />
+            <Sun className="h-5 w-5 transition-transform group-hover:rotate-45" />
           ) : (
-            <Moon className="h-5 w-5" />
+            <Moon className="h-5 w-5 transition-transform group-hover:-rotate-12" />
           )}
         </button>
 
         {/* Notifications */}
-        <button className="relative rounded-full p-2 text-green-700 transition-all hover:bg-green-100 hover:text-green-900 dark:text-green-400 dark:hover:bg-green-900 dark:hover:text-green-50">
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 flex h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-green-950"></span>
+        <button className="group relative flex h-11 w-11 items-center justify-center rounded-2xl bg-input text-textSecondary transition-all hover:bg-hoverPrimary hover:text-primary active:scale-95">
+          <Bell className="h-5 w-5 transition-transform group-hover:ring-2 ring-primary/20 rounded-full" />
+          <span className="absolute right-2.5 top-2.5 flex h-2.5 w-2.5 rounded-full bg-red-500 ring-4 ring-backgroundSecondary"></span>
         </button>
 
         {/* Profile */}
-        <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-green-200 bg-green-100 transition-transform hover:scale-105 dark:border-green-800 dark:bg-green-900 sm:h-9 sm:w-9">
-          <button className="flex h-full w-full items-center justify-center text-green-700 focus:outline-none dark:text-green-400">
-            <UserCircle className="h-6 w-6" />
-          </button>
+        <div className="group flex items-center gap-3 cursor-pointer">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-borderPrimary bg-input text-textSecondary transition-all group-hover:border-primary group-hover:text-primary group-hover:scale-105 active:scale-95 overflow-hidden">
+            <UserCircle className="h-7 w-7" />
+          </div>
         </div>
       </div>
     </header>
