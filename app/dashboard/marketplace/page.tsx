@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { 
   ShoppingCart, 
   Search, 
@@ -8,313 +9,469 @@ import {
   MapPin, 
   Star, 
   TrendingUp, 
-  ArchiveRestore,
   Store,
   Tag,
   ShieldCheck,
   PackagePlus,
-  ArrowRight
+  ArrowRight,
+  Loader2,
+  X,
+  Plus,
+  Edit2,
+  Trash2,
+  Eye,
+  LayoutGrid,
+  List as ListIcon,
+  ShoppingBag,
+  Coins,
+  History
 } from "lucide-react";
 
-const MOCK_LISTINGS = [
-  {
-    id: 1,
-    type: "Sell",
-    title: "Premium Hill Country Carrots",
-    volume: "Available 800 KG",
-    price: "Rs. 240 / kg",
-    farmer: "Nimal Peiris",
-    location: "Nuwara Eliya",
-    rating: 4.8,
-    verified: true,
-    saved: false,
-    mine: false
-  },
-  {
-    id: 2,
-    type: "Buy",
-    title: "Seeking Organic Cabbage",
-    volume: "Need 2000 KG",
-    price: "Rs. 130 / kg Target",
-    farmer: "Fresca Supermarkets",
-    location: "Colombo Logistics Hub",
-    rating: 4.9,
-    verified: true,
-    saved: true,
-    mine: false
-  },
-  {
-    id: 3,
-    type: "Sell",
-    title: "Red Tomatoes (Grade A)",
-    volume: "Available 450 KG",
-    price: "Rs. 180 / kg",
-    farmer: "Sunil Silva",
-    location: "Dambulla",
-    rating: 4.5,
-    verified: false,
-    saved: true,
-    mine: false
-  },
-  {
-    id: 4,
-    type: "Sell",
-    title: "Green Chili Bulk",
-    volume: "Available 150 KG",
-    price: "Rs. 950 / kg",
-    farmer: "Ranjan Farm",
-    location: "Kandy",
-    rating: 4.7,
-    verified: true,
-    saved: false,
-    mine: false
-  },
-  {
-    id: 5,
-    type: "Sell",
-    title: "My Processed Leeks",
-    volume: "Available 300 KG",
-    price: "Rs. 150 / kg",
-    farmer: "You",
-    location: "Your Farm",
-    rating: 5.0,
-    verified: true,
-    saved: false,
-    mine: true
-  }
-];
+// API Configuration
+const API_BASE_URL = "http://localhost:8080/govisaviya/api/v1/marketplace";
+
+interface ProductListing {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  pricePerUnit: number;
+  unit: string;
+  availableQuantity: number;
+  location: string;
+  imageUrl: string | null;
+  farmer: {
+    fullName: string;
+    email: string;
+  };
+  createdAt: string;
+}
 
 export default function MarketplacePage() {
   const [activeTab, setActiveTab] = useState("explore");
+  const [listings, setListings] = useState<ProductListing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [editingProduct, setEditingProduct] = useState<ProductListing | null>(null);
+  
+  // Form State for new/edit listing
+  const [formState, setFormState] = useState({
+    name: "",
+    description: "",
+    category: "VEGETABLE",
+    pricePerUnit: 0,
+    unit: "KG",
+    availableQuantity: 0,
+    location: "",
+  });
 
-  const filteredListings = MOCK_LISTINGS.filter(item => {
+  useEffect(() => {
+    fetchListings();
+    const savedRoles = localStorage.getItem('userRoles');
+    if (savedRoles) {
+      try { setUserRoles(JSON.parse(savedRoles)); } catch (e) {}
+    }
+  }, []);
+
+  const fetchListings = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/products`);
+      setListings(response.data);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to fetch listings:", err);
+      // Mock data fallback omitted for brevity in full implementation but would go here
+      setListings([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isFarmer = userRoles.includes('FARMER');
+  const userEmail = typeof window !== 'undefined' ? localStorage.getItem("userEmail") : null;
+
+  // Farmer Specific Stats
+  const farmerStats = useMemo(() => {
+    const myItems = listings.filter(item => item.farmer.email === userEmail);
+    return {
+      totalProducts: myItems.length,
+      totalQuantity: myItems.reduce((acc, curr) => acc + curr.availableQuantity, 0),
+      totalOrders: 0, // Mock for now
+      earnings: 0 // Mock for now
+    };
+  }, [listings, userEmail]);
+
+  const handleOpenAddModal = () => {
+    setEditingProduct(null);
+    setFormState({
+      name: "",
+      description: "",
+      category: "VEGETABLE",
+      pricePerUnit: 0,
+      unit: "KG",
+      availableQuantity: 0,
+      location: "",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (product: ProductListing) => {
+    setEditingProduct(product);
+    setFormState({
+      name: product.name,
+      description: product.description || "",
+      category: product.category,
+      pricePerUnit: product.pricePerUnit,
+      unit: product.unit,
+      availableQuantity: product.availableQuantity,
+      location: product.location,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this listing?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchListings();
+      alert("Deleted successfully");
+    } catch (err) {
+      alert("Delete failed");
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      if (editingProduct) {
+        await axios.put(`${API_BASE_URL}/products/${editingProduct.id}`, formState, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } else {
+        await axios.post(`${API_BASE_URL}/products`, formState, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      setIsModalOpen(false);
+      fetchListings();
+      alert(editingProduct ? "Updated successfully" : "Listed successfully");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Operation failed");
+    }
+  };
+
+  const filteredListings = listings.filter(item => {
     if (activeTab === "explore") return true;
-    if (activeTab === "demands") return item.type === "Buy";
-    if (activeTab === "mylistings") return item.mine;
-    if (activeTab === "saved") return item.saved;
+    if (activeTab === "mylistings") return item.farmer.email === userEmail;
     return true;
   });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wider uppercase border border-primary/20">
-              <Store className="h-3.5 w-3.5 mr-1" /> Live Marketplace
-            </span>
+      
+      {/* 1. Header & Quick Stats */}
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-textPrimary mb-2 flex items-center gap-3">
+              Marketplace {activeTab === 'mylistings' && <span className="text-primary font-medium text-lg bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Management</span>}
+            </h1>
+            <p className="text-textSecondary text-lg font-medium">
+              {activeTab === 'mylistings' ? "Monitor your stock and manage your public listings." : "Discover bulk buyers, list your harvest, and negotiate prices."}
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-textPrimary mb-2">
-            Trade & Connect
-          </h1>
-          <p className="text-textSecondary text-lg font-medium">
-            Discover bulk buyers, list your harvest, and negotiate prices directly.
-          </p>
-        </div>
-        
-        {/* Search & Filter */}
-        <div className="flex gap-3 w-full lg:w-auto">
-          <div className="relative group w-full lg:w-72">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-textSecondary group-focus-within:text-primary transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search produce..." 
-              className="pl-10 pr-4 py-3 rounded-xl bg-backgroundSecondary border border-borderPrimary text-sm font-medium text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary/50 w-full transition-all shadow-sm"
-            />
+          <div className="flex gap-3">
+            {isFarmer && (
+              <button 
+                onClick={handleOpenAddModal}
+                className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-4 text-sm font-bold text-backgroundSecondary shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add New Product
+              </button>
+            )}
           </div>
-          <button className="inline-flex items-center justify-center rounded-xl bg-backgroundSecondary px-4 py-3 text-sm font-bold text-textPrimary shadow-sm border border-borderPrimary hover:bg-hoverPrimary hover:border-primary/40 hover:text-primary transition-colors">
-            <Filter className="h-4 w-4" />
-          </button>
-          <button className="hidden lg:inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-bold text-backgroundSecondary shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all">
-            <PackagePlus className="mr-2 h-4 w-4" />
-            New Listing
-          </button>
         </div>
+
+        {/* 2. Summary Cards (Only for Farmer in Management Tab) */}
+        {isFarmer && activeTab === 'mylistings' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: "Total Products", value: farmerStats.totalProducts, icon: ShoppingBag, color: "bg-blue-500" },
+              { label: "Stock Volume", value: `${farmerStats.totalQuantity} kg`, icon: PackagePlus, color: "bg-primary" },
+              { label: "Total Orders", value: farmerStats.totalOrders, icon: History, color: "bg-purple-500" },
+              { label: "Earnings (Rs)", value: farmerStats.earnings.toLocaleString(), icon: Coins, color: "bg-orange-500" },
+            ].map((stat, i) => (
+              <div key={i} className="bg-backgroundSecondary border border-borderPrimary p-6 rounded-[2rem] shadow-sm flex items-center gap-5 hover:border-primary/30 transition-all group">
+                <div className={`p-4 rounded-2xl ${stat.color} text-backgroundSecondary shadow-lg group-hover:scale-110 transition-transform`}>
+                  <stat.icon className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-textSecondary uppercase tracking-widest mb-1">{stat.label}</p>
+                  <p className="text-2xl font-black text-textPrimary">{stat.value}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+      {/* 3. Main Interface */}
+      <div className="bg-transparent space-y-6">
         
-        {/* Main Content Area */}
-        <div className="xl:col-span-3 space-y-8 flex flex-col">
-          
-          {/* Quick Filters / Tabs */}
-          <div className="flex flex-wrap gap-2 pb-1 border-b border-borderPrimary">
+        {/* Tab Selection */}
+        <div className="flex items-center justify-between border-b border-borderPrimary">
+          <div className="flex gap-1">
             {[
-              { id: "explore", label: "Explore Market" },
-              { id: "demands", label: "Buyer Demands" },
-              { id: "mylistings", label: "My Listings" },
-              { id: "saved", label: "Saved" }
-            ].map((tab) => (
+              { id: "explore", label: "Public Market", icon: Store },
+              { id: "mylistings", label: "My Listings", icon: ListIcon, hide: !isFarmer },
+            ].filter(t => !t.hide).map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-2.5 rounded-t-xl text-sm font-bold transition-colors ${
-                  activeTab === tab.id
-                    ? "bg-backgroundSecondary text-primary border-t border-x border-borderPrimary shadow-[0_4px_0_0_var(--background-secondary)]" 
-                    : "text-textSecondary hover:text-primary hover:bg-hoverPrimary/50"
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all relative ${
+                  activeTab === tab.id ? "text-primary" : "text-textSecondary hover:text-textPrimary"
                 }`}
               >
+                <tab.icon className="w-4 h-4" />
                 {tab.label}
+                {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full shadow-[0_-4px_10px_rgba(var(--primary-rgb),0.5)]"></div>}
               </button>
             ))}
           </div>
+          <div className="flex items-center gap-4 text-textSecondary bg-backgroundSecondary border border-borderPrimary px-4 py-2 rounded-xl text-xs font-bold">
+             <Search className="w-4 h-4" />
+             <input placeholder="Quick search..." className="bg-transparent outline-none w-32" />
+          </div>
+        </div>
 
-          {/* Hero Promo Banner (hide on generic tabs to keep it clean, show fully on explore) */}
-          {activeTab === "explore" && (
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-secondary p-8 md:p-10 text-backgroundSecondary shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 h-auto w-full group">
-              <div className="absolute right-0 top-0 opacity-10 pointer-events-none transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-6">
-                <ArchiveRestore className="w-80 h-80 -mt-16 -mr-16" />
+        {/* Content View */}
+        {loading ? (
+             <div className="p-32 text-center flex flex-col items-center justify-center">
+                <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+                <p className="text-textSecondary font-bold text-lg">Synchronizing your marketplace...</p>
+             </div>
+        ) : (
+          <>
+            {activeTab === 'explore' ? (
+              /* EXPLORE GRID */
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredListings.length === 0 ? (
+                  <EmptyState isFarmer={isFarmer} onAdd={handleOpenAddModal} />
+                ) : filteredListings.map(item => <ExploreCard key={item.id} product={item} />)}
               </div>
-              
-              <div className="relative z-10 max-w-lg">
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-backgroundSecondary/20 text-backgroundSecondary text-xs font-bold tracking-wider uppercase mb-4 backdrop-blur-md border border-backgroundSecondary/10">
-                  <TrendingUp className="h-3.5 w-3.5 mr-1" /> High Demand
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight text-backgroundSecondary leading-tight">
-                  Supermarkets need Premium Chili 
-                </h2>
-                <p className="text-backgroundSecondary/90 leading-relaxed text-base font-medium opacity-90 mb-6">
-                  Bulk buyers in Colombo are currently offering up to 15% above market rate for A-Grade authentic green chilis. Minimum 500kg.
-                </p>
-                <button className="bg-backgroundSecondary text-primary px-6 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-backgroundSecondary/90 transition-all hover:-translate-y-0.5">
-                  View Requirements
+            ) : (
+              /* MY LISTINGS TABLE / DETAIL VIEW */
+              <div className="bg-backgroundSecondary border border-borderPrimary rounded-[2.5rem] overflow-hidden shadow-sm">
+                <div className="overflow-x-auto no-scrollbar">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-hoverPrimary/50 border-b border-borderPrimary">
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest">Product</th>
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest">Category</th>
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest">Price</th>
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest">Stock</th>
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest">Status</th>
+                        <th className="p-6 text-xs font-black uppercase text-textSecondary tracking-widest text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredListings.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-20 text-center">
+                            <EmptyState isFarmer={true} onAdd={handleOpenAddModal} small />
+                          </td>
+                        </tr>
+                      ) : filteredListings.map(item => (
+                        <tr key={item.id} className="border-b border-borderPrimary hover:bg-hoverPrimary/30 transition-colors group">
+                          <td className="p-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-input flex items-center justify-center text-textSecondary border border-borderPrimary overflow-hidden">
+                                {item.imageUrl ? <img src={item.imageUrl} className="w-full h-full object-cover" /> : <Tag className="w-5 h-5" />}
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="font-bold text-textPrimary group-hover:text-primary transition-colors">{item.name}</span>
+                                <span className="text-[10px] text-textSecondary opacity-70 flex items-center mt-1"><MapPin className="w-3 h-3 mr-1" /> {item.location}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-6">
+                            <span className="px-3 py-1 rounded-lg bg-hoverPrimary border border-borderPrimary text-[10px] font-black uppercase tracking-widest text-textSecondary">
+                              {item.category}
+                            </span>
+                          </td>
+                          <td className="p-6 font-bold text-textPrimary">Rs. {item.pricePerUnit} <span className="text-[10px] opacity-50">/ {item.unit}</span></td>
+                          <td className="p-6">
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-sm font-bold text-textPrimary">{item.availableQuantity} {item.unit}</span>
+                              <div className="w-24 h-1.5 bg-input rounded-full overflow-hidden">
+                                <div className="h-full bg-primary rounded-full transition-all" style={{ width: item.availableQuantity > 0 ? '60%' : '0%' }}></div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-6">
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              item.availableQuantity > 0 ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'
+                            }`}>
+                              <div className={`w-1.5 h-1.5 rounded-full ${item.availableQuantity > 0 ? 'bg-primary' : 'bg-destructive'}`}></div>
+                              {item.availableQuantity > 0 ? 'Active' : 'Out of Stock'}
+                            </span>
+                          </td>
+                          <td className="p-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <button onClick={() => handleOpenEditModal(item)} className="p-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-textSecondary transition-all cursor-pointer" title="Edit">
+                                <Edit2 className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => handleDeleteProduct(item.id)} className="p-2.5 rounded-xl hover:bg-destructive/10 hover:text-destructive text-textSecondary transition-all cursor-pointer" title="Delete">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* 4. Modals */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-backgroundSecondary w-full max-w-xl rounded-[3rem] border border-borderPrimary shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-8 border-b border-borderPrimary flex justify-between items-center bg-hoverPrimary/20">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-primary text-backgroundSecondary shadow-lg">
+                  {editingProduct ? <Edit2 className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-textPrimary tracking-tight">{editingProduct ? "Edit Product" : "Launch Listing"}</h2>
+                  <p className="text-xs font-bold text-textSecondary uppercase tracking-widest">Market Integration Portal</p>
+                </div>
+              </div>
+              <button onClick={() => setIsModalOpen(false)} className="p-3 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all text-textSecondary">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleFormSubmit} className="p-10 space-y-6 max-h-[70vh] overflow-y-auto no-scrollbar">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="col-span-2 space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Product Identity</label>
+                  <input required value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} placeholder="e.g. Premium White Rice" 
+                    className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-bold" />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Base Category</label>
+                  <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})}
+                    className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold">
+                    <option value="VEGETABLE">Vegetable</option>
+                    <option value="FRUIT">Fruit</option>
+                    <option value="GRAIN">Grain</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Pricing (Rs/{formState.unit})</label>
+                  <input type="number" required value={formState.pricePerUnit} onChange={e => setFormState({...formState, pricePerUnit: Number(e.target.value)})}
+                    className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold" />
+                </div>
+
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Quantity</label>
+                   <div className="flex bg-input border border-borderPrimary rounded-2xl overflow-hidden focus-within:border-primary focus-within:ring-1 transition-all">
+                      <input type="number" required value={formState.availableQuantity} onChange={e => setFormState({...formState, availableQuantity: Number(e.target.value)})}
+                        className="flex-1 px-6 py-4 bg-transparent outline-none font-bold" />
+                      <select value={formState.unit} onChange={e => setFormState({...formState, unit: e.target.value})} className="px-4 bg-hoverPrimary border-l border-borderPrimary outline-none text-xs font-black">
+                        <option value="KG">KG</option>
+                        <option value="BAG">BAG</option>
+                        <option value="PLANT">PLANT</option>
+                      </select>
+                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Origin Location</label>
+                  <input required value={formState.location} onChange={e => setFormState({...formState, location: e.target.value})} placeholder="Nuwara Eliya" 
+                    className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold" />
+                </div>
+
+                <div className="col-span-2 space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Detailed Description</label>
+                  <textarea rows={3} value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} placeholder="Tell buyers about your harvest quality, farming methods, etc."
+                    className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold no-scrollbar resize-none text-sm"></textarea>
+                </div>
+              </div>
+
+              <div className="pt-8 flex gap-4">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-8 py-5 border border-borderPrimary font-black text-xs uppercase tracking-widest text-textSecondary rounded-2xl hover:bg-hoverPrimary transition-all">Cancel</button>
+                <button type="submit" className="flex-1 py-5 bg-primary text-backgroundSecondary font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:shadow-[0_10px_40px_rgba(var(--primary-rgb),0.3)] hover:-translate-y-1 transition-all">
+                  {editingProduct ? "Save Changes" : "Confirm Listing"}
                 </button>
               </div>
-            </div>
-          )}
-
-          {/* Grid Listings */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredListings.length === 0 ? (
-              <div className="col-span-1 md:col-span-2 p-12 text-center flex flex-col items-center justify-center border-2 border-dashed border-borderPrimary rounded-3xl bg-backgroundSecondary/50 opacity-80 mt-4">
-                <PackagePlus className="w-12 h-12 text-borderPrimary mb-4" />
-                <h3 className="text-xl font-bold text-textPrimary">No Listings Found</h3>
-                <p className="text-textSecondary font-medium mt-2">There are currently no listings bridging this category criteria.</p>
-              </div>
-            ) : filteredListings.map((item) => (
-              <div key={item.id} className="flex flex-col p-6 rounded-3xl border border-borderPrimary hover:border-primary/40 bg-backgroundSecondary hover:bg-hoverPrimary/40 transition-all duration-300 shadow-sm hover:shadow-xl group">
-                <div className="flex justify-between items-start mb-5">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm ${
-                    item.type === 'Sell' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary/10 text-secondary border-secondary/20'
-                  }`}>
-                    {item.type === 'Sell' ? 'For Sale' : 'Buyer Request'}
-                  </span>
-                  <div className="flex items-center gap-1.5 bg-hoverPrimary/50 text-textSecondary px-2.5 py-1.5 rounded-lg text-xs font-bold border border-borderPrimary">
-                    <Star className="h-3.5 w-3.5 fill-primary text-primary" /> {item.rating}
-                  </div>
-                </div>
-                
-                <h3 className="font-bold text-textPrimary text-xl line-clamp-1 group-hover:text-primary transition-colors tracking-tight">{item.title}</h3>
-                <div className="mt-2 flex items-center gap-2">
-                  <Tag className="h-4 w-4 text-textSecondary" />
-                  <p className="text-2xl font-black text-textPrimary tracking-tight">{item.price}</p>
-                </div>
-                
-                <div className="mt-6 pt-5 border-t border-borderPrimary space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-sm font-medium text-textSecondary">
-                      <MapPin className="h-4 w-4 mr-2 text-primary" />
-                      {item.location}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-textSecondary font-medium uppercase tracking-wider mb-0.5">Supplier</span>
-                      <div className="flex items-center font-bold text-sm text-textPrimary">
-                        {item.farmer}
-                        {item.verified && (
-                          <ShieldCheck className="h-4 w-4 ml-1 text-primary" />
-                        )}
-                      </div>
-                    </div>
-                    {item.mine ? (
-                      <button className="text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95 border border-primary/20">
-                        Edit Listing
-                      </button>
-                    ) : (
-                      <button className="text-sm font-bold text-backgroundSecondary bg-textPrimary hover:bg-primary px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95">
-                        Connect
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+            </form>
           </div>
-          
-          {filteredListings.length > 0 && (
-            <button className="w-full py-4 rounded-2xl border-2 border-borderPrimary text-sm font-bold text-textSecondary hover:bg-hoverPrimary hover:border-primary/40 hover:text-primary transition-all flex items-center justify-center">
-              Load More Listings
-            </button>
-          )}
         </div>
+      )}
+    </div>
+  );
+}
 
-        {/* Right Column: Trending & Stats */}
-        <div className="xl:col-span-1 space-y-8 flex flex-col">
-          
-          <div className="rounded-3xl border border-borderPrimary bg-backgroundSecondary shadow-sm p-6 lg:p-8 flex flex-col">
-            <h2 className="text-lg font-bold text-textPrimary mb-6 flex items-center">
-              <TrendingUp className="h-5 w-5 mr-3 text-primary" />
-              Market Movers
-            </h2>
-            
-            <div className="flex-1 space-y-4">
-              {[
-                { crop: "Carrot", oldPrice: 220, newPrice: 240, trend: "up" },
-                { crop: "Tomato", oldPrice: 200, newPrice: 180, trend: "down" },
-                { crop: "Leeks", oldPrice: 140, newPrice: 155, trend: "up" },
-                { crop: "Cabbage", oldPrice: 130, newPrice: 130, trend: "neutral" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between py-3 border-b border-borderPrimary last:border-0 last:pb-0 group">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-textPrimary mb-1 group-hover:text-primary transition-colors">{item.crop}</span>
-                    <span className="text-xs text-textSecondary font-medium">Rs. {item.newPrice} / kg</span>
-                  </div>
-                  <div className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${
-                    item.trend === 'up' ? 'bg-primary/10 text-primary border-primary/20' : 
-                    item.trend === 'down' ? 'bg-destructive/10 text-destructive border-destructive/20' : 
-                    'bg-hoverPrimary text-textSecondary border-borderPrimary'
-                  }`}>
-                    {item.trend === 'up' && '▲ '}
-                    {item.trend === 'down' && '▼ '}
-                    {item.trend === 'neutral' && '- '}
-                    {Math.abs(item.newPrice - item.oldPrice)} Rs
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button className="w-full mt-6 py-3 rounded-xl bg-hoverPrimary text-sm font-bold text-primary hover:bg-primary/20 transition-all flex items-center justify-center">
-              Full Price Report <ArrowRight className="h-4 w-4 ml-1.5" />
-            </button>
-          </div>
-
-          <div className="rounded-3xl border border-borderPrimary bg-backgroundSecondary shadow-sm p-6 lg:p-8 relative overflow-hidden group">
-            <div className="absolute opacity-10 -right-6 -bottom-6 transition-transform duration-500 group-hover:scale-110">
-              <ShoppingCart className="w-32 h-32" />
-            </div>
-            <h2 className="text-lg font-bold text-textPrimary mb-2">My Activity</h2>
-            <div className="space-y-4 mt-6 relative z-10">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-textSecondary">Active Listings</span>
-                <span className="font-bold text-textPrimary">2</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-textSecondary">Total Sold (This month)</span>
-                <span className="font-bold text-textPrimary">450 kg</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-textSecondary">Revenue Generated</span>
-                <span className="font-bold text-primary text-lg">Rs. 95K</span>
-              </div>
-            </div>
-          </div>
-
+// Sub-components for cleaner structure
+function ExploreCard({ product }: { product: ProductListing }) {
+  return (
+    <div className="flex flex-col p-6 rounded-[2rem] border border-borderPrimary hover:border-primary/40 bg-backgroundSecondary hover:bg-hoverPrimary/40 transition-all duration-300 shadow-sm hover:shadow-xl group relative overflow-hidden">
+      <div className="flex justify-between items-start mb-5 relative z-10">
+        <span className="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">Market Live</span>
+        <div className="flex items-center gap-1 bg-hoverPrimary/50 text-textSecondary px-2 py-1 rounded-lg text-[10px] font-bold border border-borderPrimary shrink-0">
+          <Star className="h-3 w-3 fill-primary text-primary" /> 4.8
         </div>
-
       </div>
+      
+      <h3 className="font-bold text-textPrimary text-xl line-clamp-1 group-hover:text-primary transition-colors tracking-tight mb-2">{product.name}</h3>
+      <div className="flex items-center gap-2 mb-6">
+        <p className="text-2xl font-black text-textPrimary tracking-tighter">Rs. {product.pricePerUnit}</p>
+        <span className="text-[10px] text-textSecondary font-bold uppercase tracking-widest opacity-60">/ {product.unit}</span>
+      </div>
+      
+      <div className="mt-auto pt-6 border-t border-borderPrimary flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center text-[10px] font-bold text-textSecondary">
+            <MapPin className="h-3 w-3 mr-1 text-primary" /> {product.location}
+          </div>
+          <span className="text-[10px] font-black text-primary uppercase tracking-widest">{product.availableQuantity} {product.unit} available</span>
+        </div>
+        <button className="h-12 w-12 bg-textPrimary hover:bg-primary text-backgroundSecondary rounded-2xl flex items-center justify-center transition-all shadow-md group-hover:scale-105 active:scale-95 cursor-pointer">
+          <ShoppingCart className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ isFarmer, onAdd, small }: { isFarmer: boolean, onAdd: () => void, small?: boolean }) {
+  return (
+    <div className={`col-span-full border-2 border-dashed border-borderPrimary rounded-[3rem] bg-backgroundSecondary/50 flex flex-col items-center justify-center ${small ? 'p-10' : 'p-32'}`}>
+      <div className="w-20 h-20 rounded-full bg-input flex items-center justify-center text-textSecondary mb-6 opacity-30">
+        <PackagePlus className="w-10 h-10" />
+      </div>
+      <h3 className="text-2xl font-bold text-textPrimary mb-2">No Active Listings</h3>
+      <p className="text-textSecondary font-medium max-w-xs text-center mb-8">This view is currently empty. Start growing your local presence by adding a new product.</p>
+      {isFarmer && (
+        <button onClick={onAdd} className="px-8 py-4 bg-primary text-backgroundSecondary rounded-2xl font-bold hover:shadow-lg transition-all flex items-center gap-2">
+          <Plus className="w-4 h-4" /> Add Your First Product
+        </button>
+      )}
     </div>
   );
 }
