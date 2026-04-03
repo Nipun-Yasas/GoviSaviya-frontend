@@ -59,6 +59,8 @@ export default function LoginPage() {
         router.push('/dashboard/farmer');
       } else if (roles.includes('BUYER')) {
         router.push('/dashboard/buyer');
+      } else if (roles.includes('DELIVERY')) {
+        router.push('/dashboard/delivery');
       } else {
         router.push('/dashboard');
       }
