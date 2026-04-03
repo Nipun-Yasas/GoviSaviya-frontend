@@ -12,23 +12,29 @@ import {
   Phone,
   ArrowRight,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  TrendingUp,
+  Map,
+  ChevronRight,
+  Navigation
 } from "lucide-react";
 
 interface DeliveryJob {
   id: number;
-  order: {
+  order?: {
     id: number;
     status: string;
     deliveryAddress: string;
     totalAmount: number;
-    buyer: {
+    buyer?: {
       fullName: string;
       phone: string;
     };
   };
   status: string;
   assignedAt: string;
+  pickedUpAt?: string;
+  deliveredAt?: string;
 }
 
 const API_BASE_URL = "http://localhost:8080/govisaviya/api/v1/delivery";
@@ -36,6 +42,7 @@ const API_BASE_URL = "http://localhost:8080/govisaviya/api/v1/delivery";
 export default function DeliveryDashboard() {
   const [jobs, setJobs] = useState<DeliveryJob[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -53,7 +60,7 @@ export default function DeliveryDashboard() {
       setError(null);
     } catch (err) {
       console.error("Failed to fetch jobs:", err);
-      setError("Failed to load delivery jobs.");
+      setError("Failed to load your latest delivery jobs. Please try refreshing.");
     } finally {
       setLoading(false);
     }
@@ -61,21 +68,25 @@ export default function DeliveryDashboard() {
 
   const updateStatus = async (jobId: number, status: string) => {
     try {
+      setUpdating(jobId);
       const token = localStorage.getItem("token");
       await axios.patch(`${API_BASE_URL}/status/${jobId}?status=${status}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchJobs();
+      await fetchJobs();
     } catch (err) {
-      alert("Failed to update status");
+      console.error("Status update error:", err);
+      alert("Failed to update trip status. Please check your connection.");
+    } finally {
+      setUpdating(null);
     }
   };
 
   if (loading) {
     return (
-      <div className="p-32 text-center flex flex-col items-center justify-center">
-        <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-        <p className="text-textSecondary font-bold text-lg">Loading your delivery jobs...</p>
+      <div className="min-h-[80vh] flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin mb-6" />
+        <p className="text-textSecondary font-bold text-xl animate-pulse">Initializing Command Center...</p>
       </div>
     );
   }
@@ -84,161 +95,261 @@ export default function DeliveryDashboard() {
   const activeJobs = jobsArray.filter(j => j && j.status !== 'DELIVERED');
   const completedJobs = jobsArray.filter(j => j && j.status === 'DELIVERED');
 
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      
+      {/* Header Panel */}
+      <section className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 py-4">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-textPrimary mb-2 flex items-center gap-3">
-            Delivery Dashboard <Truck className="text-primary w-8 h-8" />
+          <div className="flex items-center gap-3 mb-3">
+             <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
+                Live Console
+             </span>
+             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-textPrimary leading-tight">
+             My Delivery <span className="text-primary italic">Operations</span>
           </h1>
-          <p className="text-textSecondary text-lg font-medium">
-            Manage your assignments and track your deliveries.
+          <p className="text-textSecondary text-lg font-medium mt-2">
+            Managing fresh food distribution across your region.
           </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Active Jobs */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-xl font-bold text-textPrimary flex items-center gap-2">
-            Active Assignments <span className="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full">{activeJobs.length}</span>
-          </h2>
+        <div className="flex gap-4">
+           <div className="bg-backgroundSecondary border border-borderPrimary p-6 rounded-[2rem] shadow-sm flex flex-col justify-center min-w-[160px]">
+              <p className="text-[10px] font-black uppercase tracking-widest text-textSecondary mb-1">Success Rate</p>
+              <h3 className="text-2xl font-black text-textPrimary">98.4%</h3>
+           </div>
+           <div className="bg-primary p-6 rounded-[2rem] shadow-xl text-backgroundSecondary flex flex-col justify-center min-w-[160px]">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Session Active</p>
+              <h3 className="text-2xl font-black">{activeJobs.length} Trips</h3>
+           </div>
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* Main Jobs Section */}
+        <div className="lg:col-span-8 space-y-10">
+          
+          <div className="flex items-center justify-between">
+             <h2 className="text-2xl font-bold text-textPrimary flex items-center gap-3">
+                Active Assignments
+                <span className="bg-primary/20 text-primary text-xs w-6 h-6 flex items-center justify-center rounded-full font-black">
+                   {activeJobs.length}
+                </span>
+             </h2>
+             <button 
+                onClick={fetchJobs}
+                className="p-3 border border-borderPrimary rounded-2xl hover:bg-hoverPrimary transition-all text-textSecondary"
+              >
+                <Clock className="w-5 h-5" />
+             </button>
+          </div>
 
           {activeJobs.length === 0 ? (
-            <div className="bg-backgroundSecondary border border-borderPrimary rounded-[2rem] p-12 text-center">
-              <Package className="w-12 h-12 text-textSecondary opacity-30 mx-auto mb-4" />
-              <p className="text-textSecondary font-medium">No active jobs at the moment.</p>
+            <div className="bg-backgroundSecondary/50 border-2 border-dashed border-borderPrimary rounded-[3rem] py-24 px-12 text-center group">
+              <div className="bg-backgroundSecondary w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border border-borderPrimary group-hover:scale-110 transition-transform">
+                <Package className="w-10 h-10 text-textSecondary opacity-30" />
+              </div>
+              <h3 className="text-xl font-bold text-textPrimary mb-2">Standby Mode</h3>
+              <p className="text-textSecondary font-medium max-w-sm mx-auto">
+                No active delivery request found. You'll see new assignments here when farmers allocate jobs.
+              </p>
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="space-y-8">
               {activeJobs.map(job => (
-                <div key={job.id} className="bg-backgroundSecondary border border-borderPrimary rounded-[2rem] p-8 shadow-sm hover:border-primary/40 transition-all">
-                  <div className="flex justify-between items-start mb-6">
-                    <div>
-                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                        job.order.status === 'ACCEPTED' ? 'bg-blue-500/10 text-blue-500' :
-                        job.order.status === 'ASSIGNED' ? 'bg-primary/10 text-primary' :
-                        'bg-orange-500/10 text-orange-500'
-                      }`}>
-                        {job.order.status === 'ACCEPTED' ? 'New Request' :
-                         job.order.status === 'ASSIGNED' ? 'Accepted / Waiting for Pickup' :
-                         job.order.status === 'PICKED_UP' ? 'Picked Up / Underway' :
-                         job.order.status}
-                      </span>
-                      <h3 className="text-xl font-bold text-textPrimary mt-2">Order #{job.order.id}</h3>
+                <div 
+                   key={job.id} 
+                   className="bg-backgroundSecondary border border-borderPrimary rounded-[3rem] p-4 md:p-10 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-500 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                     <Truck className="w-48 h-48 rotate-12" />
+                  </div>
+
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-6 relative z-10">
+                    <div className="flex gap-6">
+                      <div className="bg-primary/10 w-20 h-20 rounded-[2rem] flex items-center justify-center border border-primary/20">
+                         <Truck className="w-8 h-8 text-primary" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                            job.order?.status === 'ASSIGNED' ? 'bg-primary/10 text-primary' :
+                            'bg-orange-500/10 text-orange-500'
+                          }`}>
+                            {job.order?.status === 'ASSIGNED' ? 'Ready for Pickup' : 'Trip Underway'}
+                          </span>
+                        </div>
+                        <h3 className="text-3xl font-black text-textPrimary">Trip #{job.order?.id || job.id}</h3>
+                        <p className="text-textSecondary font-bold mt-1">Assigned {new Date(job.assignedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-textSecondary font-bold">Assigned On</p>
-                      <p className="font-bold text-textPrimary">{new Date(job.assignedAt).toLocaleDateString()}</p>
+
+                    <div className="flex flex-col items-end">
+                       <p className="text-xs font-black uppercase tracking-widest text-textSecondary mb-1">Trip Value</p>
+                       <p className="text-3xl font-black text-primary">Rs. {job.order?.totalAmount || 0}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-y border-borderPrimary py-6">
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <MapPin className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-12 mb-10 p-8 bg-hoverPrimary/40 rounded-[2.5rem] border border-borderPrimary relative z-10">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="bg-backgroundSecondary p-3 rounded-2xl shadow-sm">
+                           <MapPin className="w-6 h-6 text-primary" />
+                        </div>
                         <div>
-                          <p className="text-[10px] font-black text-textSecondary uppercase tracking-widest">Delivery Address</p>
-                          <p className="font-bold text-textPrimary">{job.order.deliveryAddress}</p>
+                          <p className="text-[11px] font-black text-textSecondary uppercase tracking-widest mb-1">Drop-off Destination</p>
+                          <p className="text-lg font-black text-textPrimary leading-tight">{job.order?.deliveryAddress || "N/A"}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <User className="w-5 h-5 text-primary shrink-0" />
+                      <div className="flex items-center gap-4">
+                        <div className="bg-backgroundSecondary p-3 rounded-2xl shadow-sm">
+                           <User className="w-6 h-6 text-primary" />
+                        </div>
                         <div>
-                          <p className="text-[10px] font-black text-textSecondary uppercase tracking-widest">Buyer</p>
-                          <p className="font-bold text-textPrimary">{job.order.buyer.fullName}</p>
+                          <p className="text-[11px] font-black text-textSecondary uppercase tracking-widest mb-1">Customer Profile</p>
+                          <p className="text-lg font-black text-textPrimary">{job.order?.buyer?.fullName || "Buyer"}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-5 h-5 text-primary shrink-0" />
+
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4 cursor-pointer group/btn" onClick={() => window.open(`tel:${job.order?.buyer?.phone}`)}>
+                        <div className="bg-backgroundSecondary p-3 rounded-2xl shadow-sm group-hover/btn:bg-primary group-hover/btn:text-white transition-all">
+                           <Phone className="w-6 h-6 text-primary group-hover/btn:text-white" />
+                        </div>
                         <div>
-                          <p className="text-[10px] font-black text-textSecondary uppercase tracking-widest">Contact</p>
-                          <p className="font-bold text-textPrimary">{job.order.buyer.phone}</p>
+                          <p className="text-[11px] font-black text-textSecondary uppercase tracking-widest mb-1">Direct Contact</p>
+                          <p className="text-lg font-black text-textPrimary hover:text-primary transition-colors">{job.order?.buyer?.phone || "N/A"}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                        <div>
-                          <p className="text-[10px] font-black text-textSecondary uppercase tracking-widest">Order Amount</p>
-                          <p className="font-bold text-textPrimary">Rs. {job.order.totalAmount}</p>
-                        </div>
+                      <div className="flex items-center gap-4">
+                         <div className="bg-backgroundSecondary p-3 rounded-2xl shadow-sm">
+                            <Navigation className="w-6 h-6 text-primary" />
+                         </div>
+                         <div>
+                           <p className="text-[11px] font-black text-textSecondary uppercase tracking-widest mb-1">Logistics Status</p>
+                           <p className="text-lg font-black text-textPrimary">{job.status}</p>
+                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    {job.order.status === 'ACCEPTED' && (
+                  <div className="flex flex-col sm:flex-row gap-5 relative z-10 overflow-hidden">
+                    {/* Dynamic Action Buttons */}
+                    {job.order?.status === 'ASSIGNED' && (
                       <button 
-                        onClick={() => updateStatus(job.id, 'ASSIGNED')}
-                        className="flex-1 py-4 bg-primary text-backgroundSecondary rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
-                      >
-                        Accept Job
-                      </button>
-                    )}
-                    {job.order.status === 'ASSIGNED' && (
-                      <button 
+                        disabled={updating === job.id}
                         onClick={() => updateStatus(job.id, 'PICKED_UP')}
-                        className="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
+                        className="flex-1 group/action bg-primary text-backgroundSecondary p-6 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-primary/30 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                       >
-                        Pick Up from Farmer
+                         {updating === job.id ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                           <>
+                             Confirm Job Pickup <ArrowRight className="w-5 h-5 group-hover/action:translate-x-2 transition-transform" />
+                           </>
+                         )}
                       </button>
                     )}
-                    {job.order.status === 'PICKED_UP' && (
+
+                    {job.order?.status === 'PICKED_UP' && (
                       <button 
+                        disabled={updating === job.id}
                         onClick={() => updateStatus(job.id, 'DELIVERED')}
-                        className="flex-1 py-4 bg-green-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
+                        className="flex-1 group/action bg-green-500 text-white p-6 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-green-500/30 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                       >
-                        Mark as Delivered
+                         {updating === job.id ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                           <>
+                             Verify Delivery Success <CheckCircle2 className="w-5 h-5" />
+                           </>
+                         )}
                       </button>
                     )}
-                    {job.order.status === 'ACCEPTED' && (
+
+                    {job.order?.status === 'ASSIGNED' && (
                       <button 
-                        className="px-6 py-4 border border-destructive/20 text-destructive rounded-2xl font-black text-sm uppercase hover:bg-destructive/5 transition-all"
+                         className="px-10 py-6 border border-borderPrimary rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] text-textSecondary hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all whitespace-nowrap"
                       >
-                        Reject
+                         Relinquish Job
                       </button>
                     )}
                   </div>
-
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Sidebar Stats & Recently Completed */}
-        <div className="space-y-8">
-          <div className="bg-primary p-8 rounded-[2.5rem] shadow-xl text-backgroundSecondary relative overflow-hidden group">
-            <Truck className="absolute -bottom-4 -right-4 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform" />
-            <p className="text-xs font-black uppercase tracking-[0.2em] opacity-70 mb-1">Total Deliveries</p>
-            <h3 className="text-5xl font-black mb-4">{completedJobs.length}</h3>
-            <p className="text-sm font-medium opacity-80">You're making fresh food accessible!</p>
-          </div>
+        {/* Sidebar / Performance Section */}
+        <div className="lg:col-span-4 space-y-8">
+           
+           {/* Total Statistics */}
+           <div className="bg-backgroundSecondary border border-borderPrimary p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-textSecondary mb-8 flex items-center gap-2">
+                 <TrendingUp className="w-4 h-4 text-primary" /> Performance Overview
+              </p>
+              
+              <div className="space-y-8">
+                 <div>
+                    <h3 className="text-5xl font-black text-textPrimary tracking-tighter mb-2">{completedJobs.length}</h3>
+                    <p className="text-sm font-bold text-textSecondary">Completed Trip Cycles</p>
+                 </div>
+                 <div className="h-px bg-borderPrimary w-full"></div>
+                 <div>
+                    <h3 className="text-4xl font-black text-textPrimary tracking-tighter mb-2">
+                       Rs. {completedJobs.length * 450} <span className="text-sm text-textSecondary opacity-40">Earned</span>
+                    </h3>
+                    <p className="text-sm font-bold text-textSecondary">Commission Revenue Today</p>
+                 </div>
+              </div>
 
-          <div className="bg-backgroundSecondary border border-borderPrimary rounded-[2.5rem] p-8 shadow-sm">
-            <h3 className="text-lg font-bold text-textPrimary mb-6">Recent History</h3>
-            <div className="space-y-4">
-              {completedJobs.slice(0, 5).map(job => (
-                <div key={job.id} className="flex items-center gap-4 p-4 rounded-2xl bg-hoverPrimary/30 border border-borderPrimary">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-textPrimary">Order #{job.order.id}</p>
-                    <p className="text-[10px] text-textSecondary uppercase tracking-widest font-bold">Delivered</p>
-                  </div>
-                </div>
-              ))}
-              {completedJobs.length === 0 && (
-                <p className="text-center py-6 text-textSecondary text-sm">No completed jobs yet.</p>
-              )}
-            </div>
-          </div>
+              <button 
+                 onClick={() => window.location.href='/dashboard/delivery/earnings'}
+                 className="w-full mt-12 py-5 bg-hoverPrimary/50 border border-borderPrimary rounded-[2rem] font-black text-xs uppercase tracking-widest text-textPrimary hover:bg-primary hover:text-backgroundSecondary transition-all flex items-center justify-center gap-2"
+              >
+                 View Ledger Statistics <ChevronRight className="w-4 h-4" />
+              </button>
+           </div>
+
+           {/* Quick History Feed */}
+           <div className="bg-backgroundSecondary border border-borderPrimary p-10 rounded-[3rem] shadow-sm">
+              <h3 className="text-xl font-bold text-textPrimary mb-8">Recent Payouts</h3>
+              <div className="space-y-4">
+                 {completedJobs.slice(0, 4).map(job => (
+                    <div key={job.id} className="flex items-center justify-between p-4 rounded-3xl bg-hoverPrimary/30 border border-borderPrimary/50">
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                             <CheckCircle2 className="w-5 h-5" />
+                          </div>
+                          <div>
+                             <p className="font-bold text-sm text-textPrimary">Trip #{job.order?.id || job.id}</p>
+                             <p className="text-[9px] font-black uppercase tracking-widest text-textSecondary">Delivered</p>
+                          </div>
+                       </div>
+                       <p className="font-black text-xs text-primary">+ Rs. 450</p>
+                    </div>
+                 ))}
+                 {completedJobs.length === 0 && (
+                    <div className="py-12 text-center">
+                       <p className="text-textSecondary opacity-50 font-bold text-sm italic">Queue Empty</p>
+                    </div>
+                 )}
+              </div>
+           </div>
         </div>
+
       </div>
+
+      {error && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-600 text-white px-10 py-5 rounded-full shadow-2xl flex items-center gap-4 z-50 animate-in fade-in slide-in-from-bottom-10">
+           <AlertCircle className="w-6 h-6" />
+           <p className="font-bold">{error}</p>
+           <button onClick={fetchJobs} className="underline font-black uppercase text-xs tracking-widest ml-4">Retry</button>
+        </div>
+      )}
+
     </div>
   );
 }

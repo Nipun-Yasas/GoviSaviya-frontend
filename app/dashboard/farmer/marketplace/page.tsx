@@ -1,3 +1,6 @@
-export default function FarmerMarketplace() {
-  return <div>Marketplace Tab</div>;
+"use client";
+import MarketplaceView from "@/app/components/marketplace/MarketplaceView";
+
+export default function FarmerMarketplacePage() {
+  return <MarketplaceView />;
 }

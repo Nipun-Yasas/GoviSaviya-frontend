@@ -14,28 +14,42 @@ export function DashboardLayoutClient({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Derive role accurately
-  const [role, setRole] = useState<UserRole>("farmer");
+  const [role, setRole] = useState<UserRole | null>(null);
 
   React.useEffect(() => {
-    const savedRoles = localStorage.getItem('userRoles');
-    if (savedRoles) {
-      try {
-        const roles = JSON.parse(savedRoles);
-        if (roles.includes('ADMIN')) setRole("admin");
-        else if (roles.includes('BUYER')) setRole("buyer");
-        else if (roles.includes('DELIVERY')) setRole("delivery");
-        else if (roles.includes('FARMER')) setRole("farmer");
-      } catch (e) {}
-    } else {
+    const checkRole = () => {
+      const savedRoles = localStorage.getItem('userRoles');
+      if (savedRoles) {
+        try {
+          const roles = JSON.parse(savedRoles);
+          if (roles.includes('ADMIN')) setRole("admin");
+          else if (roles.includes('BUYER')) setRole("buyer");
+          else if (roles.includes('DELIVERY')) setRole("delivery");
+          else if (roles.includes('FARMER')) setRole("farmer");
+          return;
+        } catch (e) {}
+      }
+      
       // Fallback to URL if localStorage is empty
       if (pathname.includes("/dashboard/admin")) setRole("admin");
       else if (pathname.includes("/dashboard/buyer")) setRole("buyer");
       else if (pathname.includes("/dashboard/farmer")) setRole("farmer");
       else if (pathname.includes("/dashboard/delivery")) setRole("delivery");
-    }
+    };
+
+    checkRole();
   }, [pathname]);
 
 
+
+
+  if (!role) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-[var(--background)] font-sans text-textPrimary">
@@ -44,6 +58,7 @@ export function DashboardLayoutClient({
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
       />
+
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />

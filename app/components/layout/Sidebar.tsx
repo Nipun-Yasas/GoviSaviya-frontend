@@ -48,25 +48,26 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
     
     // Farmer Specific
-    { name: "Disease Detection", href: "/dashboard/disease-detection", icon: Bug, roles: ["farmer"] },
-    { name: "Weather", href: "/dashboard/weather", icon: CloudSun, roles: ["farmer"] },
-    { name: "Yield Prediction", href: "/dashboard/yield-prediction", icon: BarChart3, roles: ["farmer"] },
-    { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart, roles: ["farmer"] },
+    { name: "Disease Detection", href: "/dashboard/farmer/disease-detection", icon: Bug, roles: ["farmer"] },
+    { name: "Weather", href: "/dashboard/farmer/weather", icon: CloudSun, roles: ["farmer"] },
+    { name: "Yield Prediction", href: "/dashboard/farmer/yield-prediction", icon: BarChart3, roles: ["farmer"] },
+    { name: "Marketplace", href: "/dashboard/farmer/marketplace", icon: ShoppingCart, roles: ["farmer"] },
     { name: "My Orders", href: "/dashboard/farmer/orders", icon: FileText, roles: ["farmer"] },
-    { name: "Chatbot", href: "/dashboard/chatbot", icon: Bot, roles: ["farmer"] },
+    { name: "Chatbot", href: "/dashboard/farmer/chatbot", icon: Bot, roles: ["farmer"] },
 
 
     
     // Buyer Specific
-    { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart, roles: ["buyer"] },
+    { name: "Marketplace", href: "/dashboard/buyer/marketplace", icon: ShoppingCart, roles: ["buyer"] },
 
     { name: "My Orders", href: "/dashboard/buyer/orders", icon: History, roles: ["buyer"] },
     { name: "Farmer Directory", href: "/dashboard/buyer/farmer-contact", icon: Users, roles: ["buyer"] },
     { name: "Regional Search", href: "/dashboard/buyer/location-filter", icon: MapPin, roles: ["buyer"] },
     
     // Admin Specific
-    { name: "User Management", href: "/dashboard/users", icon: Users, roles: ["admin"] },
-    { name: "Reports", href: "/dashboard/reports", icon: FileText, roles: ["admin"] },
+    { name: "User Management", href: "/dashboard/admin/user-management", icon: Users, roles: ["admin"] },
+    { name: "Reports", href: "/dashboard/admin/reports", icon: FileText, roles: ["admin"] },
+
 
     // Delivery Specific
     { name: "My Jobs", href: "/dashboard/delivery", icon: Truck, roles: ["delivery"] },
@@ -74,6 +75,7 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
     
     // Shared
     { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["farmer", "buyer", "admin", "delivery"] },
+
   ];
 
   const visibleLinks = allLinks.filter(link => link.roles.includes(role));
@@ -125,8 +127,9 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
               const Icon = link.icon;
               
               return (
-                <li key={link.href}>
+                <li key={`${link.name}-${link.href}`}>
                   <Link
+
                     href={link.href}
                     className={`group flex items-center rounded-2xl px-4 py-3.5 transition-all duration-300 relative overflow-hidden ${
                       isActive 
