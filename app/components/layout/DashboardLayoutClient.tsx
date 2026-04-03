@@ -13,12 +13,28 @@ export function DashboardLayoutClient({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Derive role from the URL path
-  let role: UserRole = "farmer"; // Default
-  if (pathname.includes("/dashboard/admin")) role = "admin";
-  else if (pathname.includes("/dashboard/buyer")) role = "buyer";
-  else if (pathname.includes("/dashboard/farmer")) role = "farmer";
-  else if (pathname.includes("/dashboard/delivery")) role = "delivery";
+  // Derive role accurately
+  const [role, setRole] = useState<UserRole>("farmer");
+
+  React.useEffect(() => {
+    const savedRoles = localStorage.getItem('userRoles');
+    if (savedRoles) {
+      try {
+        const roles = JSON.parse(savedRoles);
+        if (roles.includes('ADMIN')) setRole("admin");
+        else if (roles.includes('BUYER')) setRole("buyer");
+        else if (roles.includes('DELIVERY')) setRole("delivery");
+        else if (roles.includes('FARMER')) setRole("farmer");
+      } catch (e) {}
+    } else {
+      // Fallback to URL if localStorage is empty
+      if (pathname.includes("/dashboard/admin")) setRole("admin");
+      else if (pathname.includes("/dashboard/buyer")) setRole("buyer");
+      else if (pathname.includes("/dashboard/farmer")) setRole("farmer");
+      else if (pathname.includes("/dashboard/delivery")) setRole("delivery");
+    }
+  }, [pathname]);
+
 
 
   return (

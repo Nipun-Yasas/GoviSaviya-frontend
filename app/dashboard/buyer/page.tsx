@@ -69,14 +69,19 @@ export default function BuyerDashboard() {
   }, []);
 
   const stats = useMemo(() => {
-    const activeOrders = orders.filter(o => o.status === 'PENDING' || o.status === 'SHIPPED').length;
-    const totalSpent = orders.reduce((acc, curr) => acc + curr.totalAmount, 0);
+    const ordersArray = Array.isArray(orders) ? orders : [];
+    const listingsArray = Array.isArray(listings) ? listings : [];
+    
+    const activeOrders = ordersArray.filter(o => o && (o.status === 'PENDING' || o.status === 'ACCEPTED' || o.status === 'ASSIGNED' || o.status === 'PICKED_UP')).length;
+    const totalSpent = ordersArray.reduce((acc, curr) => acc + (curr?.totalAmount || 0), 0);
+    
     return {
       activeOrders,
       totalSpent,
-      totalFarmers: new Set(listings.map(l => l.farmer.email)).size
+      totalFarmers: new Set(listingsArray.map(l => l?.farmer?.email).filter(Boolean)).size
     };
   }, [orders, listings]);
+
 
   if (loading) {
     return (
@@ -182,10 +187,11 @@ export default function BuyerDashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {listings.map((product) => (
-                <ExploreCard key={product.id} product={product} />
+            {(Array.isArray(listings) ? listings : []).map((product) => (
+                product && <ExploreCard key={product.id} product={product} />
             ))}
           </div>
+
         )}
       </div>
     </div>

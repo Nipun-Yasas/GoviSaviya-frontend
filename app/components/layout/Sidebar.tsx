@@ -44,7 +44,8 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
   const allLinks = [
     // Shared
-    { name: "Dashboard", href: role === 'buyer' ? "/dashboard/buyer" : role === 'delivery' ? "/dashboard/delivery" : "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
+    { name: "Dashboard", href: role === 'buyer' ? "/dashboard/buyer" : role === 'delivery' ? "/dashboard/delivery" : role === 'farmer' ? "/dashboard/farmer" : "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
+
     
     // Farmer Specific
     { name: "Disease Detection", href: "/dashboard/disease-detection", icon: Bug, roles: ["farmer"] },
@@ -57,7 +58,8 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
     
     // Buyer Specific
-    { name: "Global Market", href: "/dashboard/buyer/marketplace", icon: ShoppingCart, roles: ["buyer"] },
+    { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart, roles: ["buyer"] },
+
     { name: "My Orders", href: "/dashboard/buyer/orders", icon: History, roles: ["buyer"] },
     { name: "Farmer Directory", href: "/dashboard/buyer/farmer-contact", icon: Users, roles: ["buyer"] },
     { name: "Regional Search", href: "/dashboard/buyer/location-filter", icon: MapPin, roles: ["buyer"] },

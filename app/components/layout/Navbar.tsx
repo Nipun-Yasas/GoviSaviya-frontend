@@ -26,6 +26,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   const [mounted, setMounted] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const [userData, setUserData] = useState({ name: "User", role: "Member", location: "Sri Lanka" });
 
   useEffect(() => {
     setMounted(true);
@@ -38,8 +39,31 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
     };
     
     document.addEventListener("mousedown", handleClickOutside);
+
+    // Load user data
+    const name = localStorage.getItem("userName");
+    const roles = localStorage.getItem("userRoles");
+    if (name) {
+      let roleLabel = "Verified User";
+      if (roles) {
+        try {
+          const r = JSON.parse(roles);
+          if (r.includes('ADMIN')) roleLabel = "System Admin";
+          else if (r.includes('FARMER')) roleLabel = "Verified Farmer";
+          else if (r.includes('BUYER')) roleLabel = "Verified Buyer";
+          else if (r.includes('DELIVERY')) roleLabel = "Delivery Partner";
+        } catch (e) {}
+      }
+      setUserData({ name, role: roleLabel, location: "Sri Lanka" });
+    }
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  };
 
   if (!mounted) {
     return (
@@ -117,31 +141,17 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     <UserCircle className="h-10 w-10" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-textPrimary text-xl tracking-tight">Sunil Peiris</h3>
+                    <h3 className="font-bold text-textPrimary text-xl tracking-tight">{userData.name}</h3>
                     <p className="text-sm font-medium text-textSecondary flex items-center mt-1">
-                      <Sprout className="h-3.5 w-3.5 mr-1 text-primary" /> Verified Farmer
+                      <Sprout className="h-3.5 w-3.5 mr-1 text-primary" /> {userData.role}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-textSecondary bg-backgroundSecondary/50 backdrop-blur-sm px-3 py-2 rounded-xl border border-borderPrimary w-fit relative z-10">
-                  <MapPin className="h-3.5 w-3.5 text-primary" /> Green Valley Harvests, Nuwara Eliya
-                </div>
               </div>
 
-              {/* Statistics & Links */}
+              {/* Statistics & Links (Stubbed for now) */}
               <div className="p-3">
-                <div className="grid grid-cols-2 gap-2 mb-3">
-                   <div className="bg-hoverPrimary rounded-2xl p-3 flex flex-col items-center justify-center border border-transparent hover:border-primary/20 transition-colors">
-                     <span className="text-secondary font-black text-2xl tracking-tighter">4</span>
-                     <span className="text-[10px] font-bold text-textSecondary uppercase tracking-wider">Active Fields</span>
-                   </div>
-                   <div className="bg-hoverPrimary rounded-2xl p-3 flex flex-col items-center justify-center border border-transparent hover:border-primary/20 transition-colors">
-                     <span className="text-primary font-black text-2xl tracking-tighter">4.8</span>
-                     <span className="text-[10px] font-bold text-textSecondary uppercase tracking-wider">Market Rating</span>
-                   </div>
-                </div>
-
-                <div className="space-y-1">
+                 <div className="space-y-1">
                   <Link href="/dashboard/settings" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center justify-between p-3.5 rounded-xl text-sm font-bold text-textPrimary hover:bg-hoverPrimary hover:text-primary transition-all group border border-transparent hover:border-primary/10">
                     <div className="flex items-center gap-3">
                       <div className="p-1.5 rounded-lg bg-hoverPrimary group-hover:bg-primary/10 transition-colors">
@@ -151,22 +161,13 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     </div>
                     <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all text-primary" />
                   </Link>
-                  <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center justify-between p-3.5 rounded-xl text-sm font-bold text-textPrimary hover:bg-hoverPrimary hover:text-primary transition-all group border border-transparent hover:border-primary/10">
-                    <div className="flex items-center gap-3">
-                      <div className="p-1.5 rounded-lg bg-hoverPrimary group-hover:bg-primary/10 transition-colors">
-                         <Shield className="h-4 w-4 text-textSecondary group-hover:text-primary transition-colors" /> 
-                      </div>
-                      Privacy & Security
-                    </div>
-                    <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all text-primary" />
-                  </button>
                 </div>
               </div>
               
               {/* Footer Actions */}
               <div className="p-3 bg-hoverPrimary/50 border-t border-borderPrimary">
                 <button 
-                  onClick={() => setIsProfileOpen(false)}
+                  onClick={handleSignOut}
                   className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-bold text-destructive bg-backgroundSecondary border border-destructive/20 hover:bg-destructive hover:text-backgroundSecondary transition-all shadow-sm active:scale-95"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out

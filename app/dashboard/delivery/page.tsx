@@ -80,8 +80,10 @@ export default function DeliveryDashboard() {
     );
   }
 
-  const activeJobs = jobs.filter(j => j.status !== 'DELIVERED');
-  const completedJobs = jobs.filter(j => j.status === 'DELIVERED');
+  const jobsArray = Array.isArray(jobs) ? jobs : [];
+  const activeJobs = jobsArray.filter(j => j && j.status !== 'DELIVERED');
+  const completedJobs = jobsArray.filter(j => j && j.status === 'DELIVERED');
+
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -115,9 +117,14 @@ export default function DeliveryDashboard() {
                   <div className="flex justify-between items-start mb-6">
                     <div>
                       <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                        job.status === 'ASSIGNED' ? 'bg-blue-500/10 text-blue-500' : 'bg-orange-500/10 text-orange-500'
+                        job.order.status === 'ACCEPTED' ? 'bg-blue-500/10 text-blue-500' :
+                        job.order.status === 'ASSIGNED' ? 'bg-primary/10 text-primary' :
+                        'bg-orange-500/10 text-orange-500'
                       }`}>
-                        {job.status === 'ASSIGNED' ? 'Waiting for Accept' : job.status}
+                        {job.order.status === 'ACCEPTED' ? 'New Request' :
+                         job.order.status === 'ASSIGNED' ? 'Accepted / Waiting for Pickup' :
+                         job.order.status === 'PICKED_UP' ? 'Picked Up / Underway' :
+                         job.order.status}
                       </span>
                       <h3 className="text-xl font-bold text-textPrimary mt-2">Order #{job.order.id}</h3>
                     </div>
@@ -163,23 +170,23 @@ export default function DeliveryDashboard() {
                   </div>
 
                   <div className="flex gap-4">
-                    {job.status === 'ASSIGNED' && (
+                    {job.order.status === 'ACCEPTED' && (
                       <button 
-                        onClick={() => updateStatus(job.id, 'ASSIGNED')} // User said delivery accepts -> status = Assigned? Wait.
+                        onClick={() => updateStatus(job.id, 'ASSIGNED')}
                         className="flex-1 py-4 bg-primary text-backgroundSecondary rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
                       >
                         Accept Job
                       </button>
                     )}
-                    {job.status === 'ASSIGNED' && (
+                    {job.order.status === 'ASSIGNED' && (
                       <button 
                         onClick={() => updateStatus(job.id, 'PICKED_UP')}
                         className="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
                       >
-                        Mark as Picked Up
+                        Pick Up from Farmer
                       </button>
                     )}
-                    {job.status === 'PICKED_UP' && (
+                    {job.order.status === 'PICKED_UP' && (
                       <button 
                         onClick={() => updateStatus(job.id, 'DELIVERED')}
                         className="flex-1 py-4 bg-green-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:shadow-lg transition-all"
@@ -187,7 +194,15 @@ export default function DeliveryDashboard() {
                         Mark as Delivered
                       </button>
                     )}
+                    {job.order.status === 'ACCEPTED' && (
+                      <button 
+                        className="px-6 py-4 border border-destructive/20 text-destructive rounded-2xl font-black text-sm uppercase hover:bg-destructive/5 transition-all"
+                      >
+                        Reject
+                      </button>
+                    )}
                   </div>
+
                 </div>
               ))}
             </div>

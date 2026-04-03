@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { 
   ShoppingCart, 
   Search, 
@@ -28,6 +29,7 @@ import {
   Truck,
   Info
 } from "lucide-react";
+
 
 
 // API Configuration
@@ -77,6 +79,8 @@ export default function MarketplacePage() {
     deliveryRequired: true
   });
 
+  const router = useRouter();
+  
   useEffect(() => {
     fetchListings();
     const savedRoles = localStorage.getItem('userRoles');
@@ -190,8 +194,9 @@ export default function MarketplacePage() {
         items: [{
           product: { id: checkoutProduct.id },
           quantity: checkoutForm.quantity,
-          price: checkoutProduct.pricePerUnit
+          priceAtOrder: checkoutProduct.pricePerUnit
         }]
+
       };
 
       await axios.post(`${API_BASE_URL}/orders`, orderData, {
@@ -200,11 +205,13 @@ export default function MarketplacePage() {
 
       setCheckoutProduct(null);
       fetchListings(); // Refresh stock
-      alert("Order placed successfully! Check 'My Orders' for status.");
+      alert("Order placed successfully! Check 'My Shopping Ledger' for status.");
+      router.push('/dashboard/buyer/orders');
     } catch (err: any) {
       alert(err.response?.data?.message || "Failed to place order");
     }
   };
+
 
   const filteredListings = listings.filter(item => {
     if (activeTab === "explore") return true;
