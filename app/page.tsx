@@ -35,7 +35,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/paddy_field.jpg"
-            alt="Beautiful green paddy field for SmartAgri background"
+            alt="Beautiful green paddy field for GoviSaviya background"
             fill
             className="object-cover object-center"
             priority
@@ -50,7 +50,7 @@ export default function Home() {
           <header className="flex items-center justify-between w-full max-w-[1400px] px-3 py-2.5 md:px-4 md:py-3 text-white bg-black/10 backdrop-blur-md border border-white/10 rounded-full shadow-lg">
             
             <div className="flex items-center ml-2">
-              <img src="/logo.png" alt="SmartAgri Logo" className="h-10 md:h-12 w-auto object-contain rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
+              <img src="/logo.png" alt="GoviSaviya Logo" className="h-10 md:h-12 w-auto object-contain rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
             </div>
             
             <nav className="hidden lg:flex items-center gap-8 text-[13px] font-medium text-white/80">
@@ -157,7 +157,7 @@ export default function Home() {
                 <div className="flex flex-col w-[360px] p-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl relative overflow-hidden group hover:bg-white/20 transition-colors shadow-2xl">
                    {/* Text Header */}
                    <div className="px-4 pt-3 pb-2 flex justify-between items-start">
-                     <span className="text-white/90 font-medium text-sm drop-shadow-md">SmartAgri - Crop AI Insights</span>
+                     <span className="text-white/90 font-medium text-sm drop-shadow-md">GoviSaviya - Crop AI Insights</span>
                    </div>
                    {/* Floating external button */}
                    <div className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center z-20 shadow-xl text-black hover:scale-110 cursor-pointer transition-transform">
@@ -430,7 +430,7 @@ export default function Home() {
         <section id="benefits" className="py-32 relative overflow-hidden bg-transparent">
           <div className="max-w-7xl px-6 mx-auto relative z-10">
           <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-white tracking-tight">Why Choose SmartAgri?</h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-white tracking-tight">Why Choose GoviSaviya?</h2>
             <p className="text-white/70 text-xl max-w-2xl mx-auto font-medium">Measurable results that matter to your livelihood and farming future.</p>
           </div>
 
@@ -504,9 +504,9 @@ export default function Home() {
         {/* FOOTER */}
         <footer className="text-white/50 py-16 text-center border-t border-white/5 bg-[#021407] relative z-20">
           <div className="flex items-center justify-center mb-6 hover:scale-105 transition-transform cursor-pointer w-max mx-auto">
-            <img src="/logo.png" alt="SmartAgri Logo" className="h-16 w-auto object-contain rounded-2xl shadow-[0_5px_20px_rgba(255,255,255,0.05)]" />
+            <img src="/logo.png" alt="GoviSaviya Logo" className="h-16 w-auto object-contain rounded-2xl shadow-[0_5px_20px_rgba(255,255,255,0.05)]" />
           </div>
-          <p className="text-sm font-medium">© {new Date().getFullYear()} SmartAgri Platform. All rights reserved. Cultivating the future.</p>
+          <p className="text-sm font-medium">© {new Date().getFullYear()} GoviSaviya Platform. All rights reserved. Cultivating the future.</p>
         </footer>
       </div>
     </div>

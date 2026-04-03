@@ -17,7 +17,11 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Sprout
+  Sprout,
+  History,
+  MapPin,
+  ClipboardList,
+  ClipboardCheck
 } from "lucide-react";
 
 export type UserRole = "farmer" | "buyer" | "admin";
@@ -42,12 +46,17 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
   const allLinks = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin"] },
     { name: "Disease Detection", href: "/dashboard/disease-detection", icon: Bug, roles: ["farmer"] }, // Removed 🌿
+    { name: "Diagnosis History", href: "/dashboard/disease-history", icon: History, roles: ["farmer"] },
+    { name: "Crop Monitor", href: "/dashboard/monitor", icon: MapPin, roles: ["farmer"] },
     { name: "Weather", href: "/dashboard/weather", icon: CloudSun, roles: ["farmer"] }, // Removed 🌦️
     { name: "Yield Prediction", href: "/dashboard/yield-prediction", icon: BarChart3, roles: ["farmer"] }, // Removed 📊
+    { name: "Fertilizer Request", href: "/dashboard/fertilizer-request", icon: ClipboardList, roles: ["farmer"] },
+    { name: "My Requests", href: "/dashboard/fertilizer-requests", icon: FileText, roles: ["farmer"] },
     { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart, roles: ["farmer", "buyer"] }, // Removed 🛒
     { name: "Chatbot", href: "/dashboard/chatbot", icon: Bot, roles: ["farmer"] }, // Removed 🤖
-    { name: "User Management", href: "/dashboard/users", icon: Users, roles: ["admin"] },
+    { name: "User Management", href: "/dashboard/admin/user-management", icon: Users, roles: ["admin"] },
     { name: "Reports", href: "/dashboard/reports", icon: FileText, roles: ["admin"] },
+    { name: "Fertilizer Review", href: "/dashboard/admin/fertilizer-reviews", icon: ClipboardCheck, roles: ["admin"] },
     { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["farmer", "buyer", "admin"] }, // Removed ⚙️
   ];
 
