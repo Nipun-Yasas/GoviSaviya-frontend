@@ -11,7 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Role = 'farmer' | 'buyer' | null;
+type Role = 'farmer' | 'buyer' | 'delivery' | null;
 type Step = 1 | 2 | 3; // 3 is success
 
 export default function RegisterPage() {
@@ -36,7 +36,10 @@ export default function RegisterPage() {
     // Buyer fields
     businessName: '',
     buyingPurpose: '',
-    preferredCropTypes: ''
+    preferredCropTypes: '',
+    // Delivery fields
+    vehicleNumber: '',
+    vehicleType: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +108,10 @@ export default function RegisterPage() {
           // Buyer fields
           businessName: formData.businessName,
           buyingPurpose: formData.buyingPurpose,
-          preferredCropTypes: formData.preferredCropTypes
+          preferredCropTypes: formData.preferredCropTypes,
+          // Delivery fields
+          vehicleNumber: formData.vehicleNumber,
+          vehicleType: formData.vehicleType
         }),
       });
 
@@ -203,6 +209,21 @@ export default function RegisterPage() {
                   {role === 'buyer' && <div className="absolute top-4 right-4 text-[#39C400]"><CheckCircle2 className="w-6 h-6 fill-[#39C400]/20" /></div>}
                 </div>
 
+                {/* Delivery Person Option */}
+                <div 
+                  onClick={() => setRole('delivery')}
+                  className={`relative overflow-hidden cursor-pointer group flex items-center gap-6 p-6 rounded-3xl border-2 transition-all duration-300 ${role === 'delivery' ? 'border-[#FFB72A] bg-[#FFB72A]/10 shadow-[0_0_30px_rgba(255,183,42,0.1)]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+                >
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors shadow-lg ${role === 'delivery' ? 'bg-[#FFB72A] text-[#5C3E00]' : 'bg-white/10 text-white/70 group-hover:text-white'}`}>
+                    <Leaf className="w-8 h-8" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-2xl font-bold text-white mb-1">Delivery Person</h3>
+                    <p className="text-white/50 font-medium text-sm leading-snug">Register your vehicle, accept delivery jobs from farmers, and earn by delivering fresh produce.</p>
+                  </div>
+                  {role === 'delivery' && <div className="absolute top-4 right-4 text-[#FFB72A]"><CheckCircle2 className="w-6 h-6 fill-[#FFB72A]/20" /></div>}
+                </div>
+
                 <div className="pt-6">
                   <button 
                     onClick={handleNextStep}
@@ -274,13 +295,27 @@ export default function RegisterPage() {
                       <input type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} placeholder="Fresh Foods Ltd." className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:outline-none focus:border-[#39C400] focus:ring-1 focus:ring-[#39C400] text-white placeholder:text-white/20 transition-all font-medium" />
                     </div>
                   )}
+
+                  {/* Delivery Specific Fields */}
+                  {role === 'delivery' && (
+                    <>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-white/50 px-2">Vehicle Number</label>
+                        <input type="text" name="vehicleNumber" value={formData.vehicleNumber} onChange={handleInputChange} placeholder="WP ABC-1234" className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:outline-none focus:border-[#FFB72A] focus:ring-1 focus:ring-[#FFB72A] text-white placeholder:text-white/20 transition-all font-medium" />
+                      </div>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-white/50 px-2">Vehicle Type</label>
+                        <input type="text" name="vehicleType" value={formData.vehicleType} onChange={handleInputChange} placeholder="e.g. Bike, Mini Truck, Car" className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:outline-none focus:border-[#FFB72A] focus:ring-1 focus:ring-[#FFB72A] text-white placeholder:text-white/20 transition-all font-medium" />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="pt-6 flex gap-4">
                   <button type="button" onClick={() => setStep(1)} disabled={loading} className="w-16 h-16 flex-shrink-0 flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/20 rounded-full transition-colors disabled:opacity-50">
                     <ArrowLeft className="w-6 h-6 text-white" />
                   </button>
-                  <button type="submit" disabled={loading} className={`flex-1 py-4 font-black text-lg transition-all rounded-[2rem] flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none ${role === 'farmer' ? 'bg-[#B7FF2A] text-[#0B4D1E] hover:bg-white' : 'bg-[#39C400] text-white hover:bg-white hover:text-[#0B4D1E]'}`}>
+                  <button type="submit" disabled={loading} className={`flex-1 py-4 font-black text-lg transition-all rounded-[2rem] flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none ${role === 'farmer' ? 'bg-[#B7FF2A] text-[#0B4D1E] hover:bg-white' : role === 'delivery' ? 'bg-[#FFB72A] text-[#5C3E00] hover:bg-white' : 'bg-[#39C400] text-white hover:bg-white hover:text-[#0B4D1E]'}`}>
                     {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Create Account'}
                   </button>
                 </div>

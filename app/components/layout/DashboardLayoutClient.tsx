@@ -18,6 +18,8 @@ export function DashboardLayoutClient({
   if (pathname.includes("/dashboard/admin")) role = "admin";
   else if (pathname.includes("/dashboard/buyer")) role = "buyer";
   else if (pathname.includes("/dashboard/farmer")) role = "farmer";
+  else if (pathname.includes("/dashboard/delivery")) role = "delivery";
+
 
   return (
     <div className="flex min-h-screen bg-[var(--background)] font-sans text-textPrimary">

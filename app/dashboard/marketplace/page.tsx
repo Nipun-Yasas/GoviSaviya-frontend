@@ -24,8 +24,11 @@ import {
   List as ListIcon,
   ShoppingBag,
   Coins,
-  History
+  History,
+  Truck,
+  Info
 } from "lucide-react";
+
 
 // API Configuration
 const API_BASE_URL = "http://localhost:8080/govisaviya/api/v1/marketplace";
@@ -65,6 +68,13 @@ export default function MarketplacePage() {
     unit: "KG",
     availableQuantity: 0,
     location: "",
+  });
+
+  const [checkoutProduct, setCheckoutProduct] = useState<ProductListing | null>(null);
+  const [checkoutForm, setCheckoutForm] = useState({
+    quantity: 1,
+    deliveryAddress: "",
+    deliveryRequired: true
   });
 
   useEffect(() => {
@@ -167,6 +177,35 @@ export default function MarketplacePage() {
     }
   };
 
+  const handlePlaceOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!checkoutProduct) return;
+    
+    try {
+      const token = localStorage.getItem("token");
+      const orderData = {
+        totalAmount: checkoutProduct.pricePerUnit * checkoutForm.quantity,
+        deliveryAddress: checkoutForm.deliveryAddress,
+        deliveryRequired: checkoutForm.deliveryRequired,
+        items: [{
+          product: { id: checkoutProduct.id },
+          quantity: checkoutForm.quantity,
+          price: checkoutProduct.pricePerUnit
+        }]
+      };
+
+      await axios.post(`${API_BASE_URL}/orders`, orderData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setCheckoutProduct(null);
+      fetchListings(); // Refresh stock
+      alert("Order placed successfully! Check 'My Orders' for status.");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to place order");
+    }
+  };
+
   const filteredListings = listings.filter(item => {
     if (activeTab === "explore") return true;
     if (activeTab === "mylistings") return item.farmer.email === userEmail;
@@ -264,7 +303,10 @@ export default function MarketplacePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredListings.length === 0 ? (
                   <EmptyState isFarmer={isFarmer} onAdd={handleOpenAddModal} />
-                ) : filteredListings.map(item => <ExploreCard key={item.id} product={item} />)}
+                ) : filteredListings.map(item => <ExploreCard key={item.id} product={item} onBuy={() => {
+                   setCheckoutProduct(item);
+                   setCheckoutForm({ ...checkoutForm, quantity: 1, deliveryAddress: item.location });
+                }} />)}
               </div>
             ) : (
               /* MY LISTINGS TABLE / DETAIL VIEW */
@@ -423,12 +465,89 @@ export default function MarketplacePage() {
           </div>
         </div>
       )}
+      {/* Checkout Modal */}
+      {checkoutProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-backgroundSecondary w-full max-w-xl rounded-[3rem] border border-borderPrimary shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-8 border-b border-borderPrimary flex justify-between items-center bg-hoverPrimary/20">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-[#39C400] text-white shadow-lg">
+                  <ShoppingCart className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-textPrimary tracking-tight">Checkout Portal</h2>
+                  <p className="text-xs font-bold text-textSecondary uppercase tracking-widest">{checkoutProduct.name}</p>
+                </div>
+              </div>
+              <button onClick={() => setCheckoutProduct(null)} className="p-3 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all text-textSecondary">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={handlePlaceOrder} className="p-10 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Order Quantity ({checkoutProduct.unit})</label>
+                    <input type="number" min="1" max={checkoutProduct.availableQuantity} required value={checkoutForm.quantity} onChange={e => setCheckoutForm({...checkoutForm, quantity: Number(e.target.value)})}
+                      className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold" />
+                 </div>
+                 
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Total Bill</label>
+                    <div className="w-full px-6 py-4 bg-hoverPrimary/30 border border-borderPrimary rounded-2xl font-black text-primary text-xl">
+                      Rs. {(checkoutProduct.pricePerUnit * checkoutForm.quantity).toLocaleString()}
+                    </div>
+                 </div>
+
+                 <div className="col-span-2 space-y-4 pt-4 border-t border-borderPrimary">
+                   <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Logistics Preference</label>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div 
+                        onClick={() => setCheckoutForm({...checkoutForm, deliveryRequired: true})}
+                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${checkoutForm.deliveryRequired ? 'border-primary bg-primary/5' : 'border-borderPrimary opacity-50'}`}
+                      >
+                         <div className="flex items-center gap-3">
+                            <Truck className={`w-5 h-5 ${checkoutForm.deliveryRequired ? 'text-primary' : 'text-textSecondary'}`} />
+                            <span className="font-bold">Home Delivery</span>
+                         </div>
+                      </div>
+                      <div 
+                        onClick={() => setCheckoutForm({...checkoutForm, deliveryRequired: false})}
+                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${!checkoutForm.deliveryRequired ? 'border-primary bg-primary/5' : 'border-borderPrimary opacity-50'}`}
+                      >
+                         <div className="flex items-center gap-3">
+                            <MapPin className={`w-5 h-5 ${!checkoutForm.deliveryRequired ? 'text-primary' : 'text-textSecondary'}`} />
+                            <span className="font-bold">Farm Pickup</span>
+                         </div>
+                      </div>
+                   </div>
+                 </div>
+
+                 {checkoutForm.deliveryRequired && (
+                   <div className="col-span-2 space-y-2 animate-in slide-in-from-top-4 duration-300">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary px-1">Shipping Address</label>
+                    <textarea required rows={2} value={checkoutForm.deliveryAddress} onChange={e => setCheckoutForm({...checkoutForm, deliveryAddress: e.target.value})} placeholder="House No, Street, City..."
+                      className="w-full px-6 py-4 bg-input border border-borderPrimary rounded-2xl focus:border-primary outline-none font-bold no-scrollbar resize-none text-sm"></textarea>
+                   </div>
+                 )}
+              </div>
+
+              <div className="pt-8">
+                <button type="submit" className="w-full py-5 bg-[#39C400] text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:shadow-[0_10px_40px_rgba(57,196,0,0.3)] hover:-translate-y-1 transition-all">
+                  Finalize & Place Order
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+
 // Sub-components for cleaner structure
-function ExploreCard({ product }: { product: ProductListing }) {
+function ExploreCard({ product, onBuy }: { product: ProductListing, onBuy: () => void }) {
   return (
     <div className="flex flex-col p-6 rounded-[2rem] border border-borderPrimary hover:border-primary/40 bg-backgroundSecondary hover:bg-hoverPrimary/40 transition-all duration-300 shadow-sm hover:shadow-xl group relative overflow-hidden">
       <div className="flex justify-between items-start mb-5 relative z-10">
@@ -451,13 +570,15 @@ function ExploreCard({ product }: { product: ProductListing }) {
           </div>
           <span className="text-[10px] font-black text-primary uppercase tracking-widest">{product.availableQuantity} {product.unit} available</span>
         </div>
-        <button className="h-12 w-12 bg-textPrimary hover:bg-primary text-backgroundSecondary rounded-2xl flex items-center justify-center transition-all shadow-md group-hover:scale-105 active:scale-95 cursor-pointer">
+        <button onClick={onBuy} className="h-12 w-12 bg-textPrimary hover:bg-primary text-backgroundSecondary rounded-2xl flex items-center justify-center transition-all shadow-md group-hover:scale-105 active:scale-95 cursor-pointer">
           <ShoppingCart className="w-5 h-5" />
         </button>
       </div>
     </div>
   );
 }
+
+
 
 function EmptyState({ isFarmer, onAdd, small }: { isFarmer: boolean, onAdd: () => void, small?: boolean }) {
   return (

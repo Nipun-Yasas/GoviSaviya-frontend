@@ -18,10 +18,13 @@ import {
   Sprout,
   History,
   MapPin,
-  MessageCircle
+  MessageCircle,
+  Truck,
+  Coins
 } from "lucide-react";
 
-export type UserRole = "farmer" | "buyer" | "admin";
+
+export type UserRole = "farmer" | "buyer" | "admin" | "delivery";
 
 interface SidebarProps {
   role: UserRole;
@@ -41,14 +44,17 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
   const allLinks = [
     // Shared
-    { name: "Dashboard", href: role === 'buyer' ? "/dashboard/buyer" : "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin"] },
+    { name: "Dashboard", href: role === 'buyer' ? "/dashboard/buyer" : role === 'delivery' ? "/dashboard/delivery" : "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
     
     // Farmer Specific
     { name: "Disease Detection", href: "/dashboard/disease-detection", icon: Bug, roles: ["farmer"] },
     { name: "Weather", href: "/dashboard/weather", icon: CloudSun, roles: ["farmer"] },
     { name: "Yield Prediction", href: "/dashboard/yield-prediction", icon: BarChart3, roles: ["farmer"] },
     { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart, roles: ["farmer"] },
+    { name: "My Orders", href: "/dashboard/farmer/orders", icon: FileText, roles: ["farmer"] },
     { name: "Chatbot", href: "/dashboard/chatbot", icon: Bot, roles: ["farmer"] },
+
+
     
     // Buyer Specific
     { name: "Global Market", href: "/dashboard/buyer/marketplace", icon: ShoppingCart, roles: ["buyer"] },
@@ -59,9 +65,13 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
     // Admin Specific
     { name: "User Management", href: "/dashboard/users", icon: Users, roles: ["admin"] },
     { name: "Reports", href: "/dashboard/reports", icon: FileText, roles: ["admin"] },
+
+    // Delivery Specific
+    { name: "My Jobs", href: "/dashboard/delivery", icon: Truck, roles: ["delivery"] },
+    { name: "Earnings", href: "/dashboard/delivery/earnings", icon: Coins, roles: ["delivery"] },
     
     // Shared
-    { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["farmer", "buyer", "admin"] },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["farmer", "buyer", "admin", "delivery"] },
   ];
 
   const visibleLinks = allLinks.filter(link => link.roles.includes(role));
