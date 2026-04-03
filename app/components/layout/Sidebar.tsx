@@ -44,7 +44,7 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
   const allLinks = [
     // Shared
-    { name: "Dashboard", href: role === 'buyer' ? "/dashboard/buyer" : role === 'delivery' ? "/dashboard/delivery" : role === 'farmer' ? "/dashboard/farmer" : "/dashboard", icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
+    { name: "Dashboard", href: `/dashboard/${role}`, icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
 
     
     // Farmer Specific
@@ -70,7 +70,7 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
 
     // Delivery Specific
-    { name: "My Jobs", href: "/dashboard/delivery", icon: Truck, roles: ["delivery"] },
+    { name: "My Jobs", href: "/dashboard/delivery/jobs", icon: Truck, roles: ["delivery"] },
     { name: "Earnings", href: "/dashboard/delivery/earnings", icon: Coins, roles: ["delivery"] },
     
     // Shared

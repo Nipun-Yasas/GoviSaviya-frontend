@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Sidebar, { UserRole } from "./Sidebar";
 import Navbar from "./Navbar";
 
@@ -11,39 +11,69 @@ export function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Derive role accurately
   const [role, setRole] = useState<UserRole | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   React.useEffect(() => {
-    const checkRole = () => {
+    const checkAuthAndRole = () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
       const savedRoles = localStorage.getItem('userRoles');
+      let currentRole: UserRole | null = null;
+
       if (savedRoles) {
         try {
           const roles = JSON.parse(savedRoles);
-          if (roles.includes('ADMIN')) setRole("admin");
-          else if (roles.includes('BUYER')) setRole("buyer");
-          else if (roles.includes('DELIVERY')) setRole("delivery");
-          else if (roles.includes('FARMER')) setRole("farmer");
-          return;
+          if (roles.includes('ADMIN')) currentRole = "admin";
+          else if (roles.includes('BUYER')) currentRole = "buyer";
+          else if (roles.includes('DELIVERY')) currentRole = "delivery";
+          else if (roles.includes('FARMER')) currentRole = "farmer";
         } catch (e) {}
       }
-      
-      // Fallback to URL if localStorage is empty
-      if (pathname.includes("/dashboard/admin")) setRole("admin");
-      else if (pathname.includes("/dashboard/buyer")) setRole("buyer");
-      else if (pathname.includes("/dashboard/farmer")) setRole("farmer");
-      else if (pathname.includes("/dashboard/delivery")) setRole("delivery");
+
+      if (!currentRole) {
+        // No valid role found - clear token and redirect to login
+        localStorage.removeItem('token');
+        router.push('/login');
+        return;
+      }
+
+      setRole(currentRole);
+
+      // Path protection: Ensure user is only in their dashboard area
+      // Shared paths allow all logged in users
+      const sharedPaths = ["/dashboard/settings"]; 
+      const isSharedPath = sharedPaths.includes(pathname);
+
+      if (pathname === "/dashboard") {
+        router.push(`/dashboard/${currentRole}`);
+        return;
+      }
+
+      if (!isSharedPath) {
+        const pathPrefix = `/dashboard/${currentRole}`;
+        if (!pathname.startsWith(pathPrefix)) {
+          // Redirect to their own dashboard home if they try to access another role's dashboard
+          router.push(pathPrefix);
+          return;
+        }
+      }
+
+      setIsAuthorized(true);
     };
 
-    checkRole();
-  }, [pathname]);
+    checkAuthAndRole();
+  }, [pathname, router]);
 
-
-
-
-  if (!role) {
+  if (!role || !isAuthorized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
