@@ -170,3 +170,23 @@ html:not(.light) body::before {
   animation: none;
   mix-blend-mode: normal;
 }
+
+@media print {
+  @page {
+    margin: 0;
+  }
+  body {
+    margin: 0;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  * {
+    overflow: visible !important;
+    scrollbar-width: none !important;
+  }
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+}

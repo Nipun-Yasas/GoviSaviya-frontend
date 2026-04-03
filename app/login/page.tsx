@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Leaf } from 'lucide-react';
+import axiosInstance from '../util/axiosInstance';
+import { API_PATHS } from '../util/apiPaths';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,26 +39,16 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8080/govisaviya/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Invalid email or password');
-      }
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
+      const data = response.data;
 
       // Store auth data
       if (data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userEmail', data.email);
-        localStorage.setItem('userName', data.fullName);
-        localStorage.setItem('userRoles', JSON.stringify(data.roles));
+        login(data.token, {
+          email: data.email,
+          name: data.fullName,
+          roles: data.roles || []
+        });
       }
 
       // Role-based redirection
@@ -72,7 +66,7 @@ export default function LoginPage() {
       }
 
     } catch (err: any) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+      setError(err.response?.data?.message || (err instanceof Error ? err.message : 'Login failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -97,7 +91,7 @@ export default function LoginPage() {
           <div className="bg-[#021407]/80 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] hover:shadow-[0_30px_120px_rgba(0,0,0,0.9)] transition-shadow duration-500">
             <div className="flex justify-center mb-8">
               <Link href="/" className="inline-block">
-                <img src="/logo.png" alt="SmartAgri Logo" className="h-16 w-auto object-contain rounded-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
+                <img src="/logo.png" alt="GoviSaviya Logo" className="h-16 w-auto object-contain rounded-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
               </Link>
             </div>
             

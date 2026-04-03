@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { DashboardLayoutClient } from "../components/layout/DashboardLayoutClient";
 
 export const metadata: Metadata = {
-  title: "Dashboard | SmartAgri",
+  title: "Dashboard | GoviSaviya",
   description: "Manage your farm, predict yields, and monitor weather.",
 };
 

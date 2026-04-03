@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartAgri",
+  title: "GoviSaviya",
   description: "Modern Agriculture Platform",
 };
 

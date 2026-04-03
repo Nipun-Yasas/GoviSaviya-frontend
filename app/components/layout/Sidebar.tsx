@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Bug, 
-  CloudSun, 
-  BarChart3, 
-  ShoppingCart, 
-  Bot, 
+import {
+  LayoutDashboard,
+  Bug,
+  CloudSun,
+  BarChart3,
+  ShoppingCart,
+  Bot,
   Settings,
   Users,
   FileText,
@@ -18,11 +18,11 @@ import {
   Sprout,
   History,
   MapPin,
-  MessageCircle,
+  ClipboardList,
+  ClipboardCheck,
   Truck,
-  Coins
+  Coins,
 } from "lucide-react";
-
 
 export type UserRole = "farmer" | "buyer" | "admin" | "delivery";
 
@@ -44,47 +44,152 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
 
   const allLinks = [
     // Shared
-    { name: "Dashboard", href: `/dashboard/${role}`, icon: LayoutDashboard, roles: ["farmer", "buyer", "admin", "delivery"] },
+    {
+      name: "Dashboard",
+      href: `/dashboard/${role}`,
+      icon: LayoutDashboard,
+      roles: ["farmer", "buyer", "admin", "delivery"],
+    },
 
-    
     // Farmer Specific
-    { name: "Disease Detection", href: "/dashboard/farmer/disease-detection", icon: Bug, roles: ["farmer"] },
-    { name: "Weather", href: "/dashboard/farmer/weather", icon: CloudSun, roles: ["farmer"] },
-    { name: "Yield Prediction", href: "/dashboard/farmer/yield-prediction", icon: BarChart3, roles: ["farmer"] },
-    { name: "Marketplace", href: "/dashboard/farmer/marketplace", icon: ShoppingCart, roles: ["farmer"] },
-    { name: "My Orders", href: "/dashboard/farmer/orders", icon: FileText, roles: ["farmer"] },
-    { name: "Chatbot", href: "/dashboard/farmer/chatbot", icon: Bot, roles: ["farmer"] },
+    {
+      name: "Disease Detection",
+      href: "/dashboard/farmer/disease-detection",
+      icon: Bug,
+      roles: ["farmer"],
+    },
+    {
+      name: "Diagnosis History",
+      href: "/dashboard/farmer/disease-history",
+      icon: History,
+      roles: ["farmer"],
+    },
+    {
+      name: "Crop Monitor",
+      href: "/dashboard/farmer/monitor",
+      icon: MapPin,
+      roles: ["farmer"],
+    },
+    {
+      name: "Weather",
+      href: "/dashboard/farmer/weather",
+      icon: CloudSun,
+      roles: ["farmer"],
+    },
+    {
+      name: "Fertilizer Request",
+      href: "/dashboard/farmer/fertilizer-request",
+      icon: ClipboardList,
+      roles: ["farmer"],
+    },
+    {
+      name: "My Requests",
+      href: "/dashboard/farmer/fertilizer-requests",
+      icon: FileText,
+      roles: ["farmer"],
+    },
+    {
+      name: "Yield Prediction",
+      href: "/dashboard/farmer/yield-prediction",
+      icon: BarChart3,
+      roles: ["farmer"],
+    },
+    {
+      name: "Marketplace",
+      href: "/dashboard/farmer/marketplace",
+      icon: ShoppingCart,
+      roles: ["farmer"],
+    },
+    {
+      name: "My Orders",
+      href: "/dashboard/farmer/orders",
+      icon: FileText,
+      roles: ["farmer"],
+    },
+    {
+      name: "Chatbot",
+      href: "/dashboard/farmer/chatbot",
+      icon: Bot,
+      roles: ["farmer"],
+    },
 
-
-    
     // Buyer Specific
-    { name: "Marketplace", href: "/dashboard/buyer/marketplace", icon: ShoppingCart, roles: ["buyer"] },
+    {
+      name: "Marketplace",
+      href: "/dashboard/buyer/marketplace",
+      icon: ShoppingCart,
+      roles: ["buyer"],
+    },
 
-    { name: "My Orders", href: "/dashboard/buyer/orders", icon: History, roles: ["buyer"] },
-    { name: "Farmer Directory", href: "/dashboard/buyer/farmer-contact", icon: Users, roles: ["buyer"] },
-    { name: "Regional Search", href: "/dashboard/buyer/location-filter", icon: MapPin, roles: ["buyer"] },
-    
+    {
+      name: "My Orders",
+      href: "/dashboard/buyer/orders",
+      icon: History,
+      roles: ["buyer"],
+    },
+    {
+      name: "Farmer Directory",
+      href: "/dashboard/buyer/farmer-contact",
+      icon: Users,
+      roles: ["buyer"],
+    },
+    {
+      name: "Regional Search",
+      href: "/dashboard/buyer/location-filter",
+      icon: MapPin,
+      roles: ["buyer"],
+    },
+
     // Admin Specific
-    { name: "User Management", href: "/dashboard/admin/user-management", icon: Users, roles: ["admin"] },
-    { name: "Reports", href: "/dashboard/admin/reports", icon: FileText, roles: ["admin"] },
-
+    {
+      name: "User Management",
+      href: "/dashboard/admin/user-management",
+      icon: Users,
+      roles: ["admin"],
+    },
+    {
+      name: "Reports",
+      href: "/dashboard/admin/reports",
+      icon: FileText,
+      roles: ["admin"],
+    },
+    {
+      name: "Fertilizer Review",
+      href: "/dashboard/admin/fertilizer-reviews",
+      icon: ClipboardCheck,
+      roles: ["admin"],
+    },
 
     // Delivery Specific
-    { name: "My Jobs", href: "/dashboard/delivery/jobs", icon: Truck, roles: ["delivery"] },
-    { name: "Earnings", href: "/dashboard/delivery/earnings", icon: Coins, roles: ["delivery"] },
-    
-    // Shared
-    { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["farmer", "buyer", "admin", "delivery"] },
+    {
+      name: "My Jobs",
+      href: "/dashboard/delivery/jobs",
+      icon: Truck,
+      roles: ["delivery"],
+    },
+    {
+      name: "Earnings",
+      href: "/dashboard/delivery/earnings",
+      icon: Coins,
+      roles: ["delivery"],
+    },
 
+    // Shared
+    {
+      name: "Settings",
+      href: "/dashboard/settings",
+      icon: Settings,
+      roles: ["farmer", "buyer", "admin", "delivery"],
+    },
   ];
 
-  const visibleLinks = allLinks.filter(link => link.roles.includes(role));
+  const visibleLinks = allLinks.filter((link) => link.roles.includes(role));
 
   return (
     <>
       {isOpen && (
-        <div 
-          className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
+        <div
+          className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-300"
           onClick={onClose}
         />
       )}
@@ -100,17 +205,17 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
           </div>
 
           <div className="flex items-center min-w-[160px] transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:translate-x-4 lg:group-hover/sidebar:translate-x-0">
-            <Image 
-              src="/logo.png" 
-              alt="Govi Saviya Logo" 
-              width={160} 
-              height={60} 
+            <Image
+              src="/logo.png"
+              alt="Govi Saviya Logo"
+              width={160}
+              height={60}
               className="h-auto w-40 object-contain brightness-110"
               priority
             />
           </div>
-          
-          <button 
+
+          <button
             className="rounded-xl p-2 text-textSecondary hover:bg-hoverPrimary hover:text-primary lg:hidden transition-all active:scale-95"
             onClick={onClose}
           >
@@ -121,23 +226,26 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
         <div className="flex-1 overflow-y-auto py-6 px-4 no-visible-scrollbar">
           <ul className="space-y-2">
             {visibleLinks.map((link) => {
-              const isActive = link.href === "/dashboard" 
-                ? pathname === "/dashboard"
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
+              const isActive =
+                link.href === "/dashboard"
+                  ? pathname === "/dashboard"
+                  : pathname === link.href ||
+                    pathname.startsWith(`${link.href}/`);
               const Icon = link.icon;
-              
+
               return (
                 <li key={`${link.name}-${link.href}`}>
                   <Link
-
                     href={link.href}
                     className={`group flex items-center rounded-2xl px-4 py-3.5 transition-all duration-300 relative overflow-hidden ${
-                      isActive 
-                        ? "bg-primary text-white shadow-lg shadow-primary/20 font-semibold" 
+                      isActive
+                        ? "bg-primary text-white shadow-lg shadow-primary/20 font-semibold"
                         : "text-textSecondary hover:bg-hoverPrimary hover:text-primary"
                     }`}
                   >
-                    <Icon className={`h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isActive ? "text-white" : "text-textSecondary group-hover:text-primary"}`} />
+                    <Icon
+                      className={`h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isActive ? "text-white" : "text-textSecondary group-hover:text-primary"}`}
+                    />
                     <span className="ml-4 whitespace-nowrap transition-all duration-300 font-medium opacity-100 lg:opacity-0 lg:-translate-x-4 lg:group-hover/sidebar:opacity-100 lg:group-hover/sidebar:translate-x-0">
                       {link.name}
                     </span>

@@ -10,6 +10,9 @@ import {
   CheckCircle2,
   Loader2
 } from 'lucide-react';
+import axiosInstance from '../util/axiosInstance';
+import { API_PATHS } from '../util/apiPaths';
+import { useAuth } from '../context/AuthContext';
 
 type Role = 'farmer' | 'buyer' | 'delivery' | null;
 type Step = 1 | 2 | 3; // 3 is success
@@ -20,6 +23,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { login } = useAuth();
 
   // Form State
   const [formData, setFormData] = useState({
@@ -88,45 +92,36 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/govisaviya/api/v1/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.name,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          location: formData.location,
-          roleName: role?.toUpperCase(),
-          // Farmer fields
-          farmSize: formData.farmSize,
-          cropTypes: formData.cropTypes,
-          experience: formData.experience ? parseInt(formData.experience) : null,
-          farmLocationDetails: formData.farmLocationDetails,
-          // Buyer fields
-          businessName: formData.businessName,
-          buyingPurpose: formData.buyingPurpose,
-          preferredCropTypes: formData.preferredCropTypes,
-          // Delivery fields
-          vehicleNumber: formData.vehicleNumber,
-          vehicleType: formData.vehicleType
-        }),
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        fullName: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        location: formData.location,
+        roleName: role?.toUpperCase(),
+        // Farmer fields
+        farmSize: formData.farmSize,
+        cropTypes: formData.cropTypes,
+        experience: formData.experience ? parseInt(formData.experience) : null,
+        farmLocationDetails: formData.farmLocationDetails,
+        // Buyer fields
+        businessName: formData.businessName,
+        buyingPurpose: formData.buyingPurpose,
+        preferredCropTypes: formData.preferredCropTypes
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
+      const data = response.data;
 
       setStep(3);
       if (data.token) {
-        localStorage.setItem('token', data.token);
+        login(data.token, {
+          email: data.email || formData.email,
+          name: data.fullName || formData.name,
+          roles: data.roles || (role ? [role.toUpperCase()] : [])
+        });
       }
     } catch (err: any) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      setError(err.response?.data?.message || (err instanceof Error ? err.message : 'Registration failed'));
     } finally {
       setLoading(false);
     }
@@ -149,11 +144,11 @@ export default function RegisterPage() {
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-10 w-full max-w-2xl px-6">
           <Link href="/">
-            <img src="/logo.png" alt="SmartAgri Logo" className="h-16 w-auto object-contain rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.05)] mb-6 hover:scale-105 transition-transform" />
+            <img src="/logo.png" alt="GoviSaviya Logo" className="h-16 w-auto object-contain rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.05)] mb-6 hover:scale-105 transition-transform" />
           </Link>
           
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-4 text-center">
-            {step === 1 && "Join SmartAgri"}
+            {step === 1 && "Join GoviSaviya"}
             {step === 2 && (role === 'farmer' ? "Farmer Registration" : "Buyer Registration")}
             {step === 3 && "Welcome Aboard!"}
           </h1>

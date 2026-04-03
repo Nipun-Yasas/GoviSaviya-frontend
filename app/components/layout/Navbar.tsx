@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -26,7 +27,16 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   const [mounted, setMounted] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const [userData, setUserData] = useState({ name: "User", role: "Member", location: "Sri Lanka" });
+  const { user, logout } = useAuth();
+
+  const getRoleDisplay = () => {
+    if (!user?.roles?.length) return "Guest";
+    const role = user.roles[0];
+    if (role === 'FARMER') return "Verified Farmer";
+    if (role === 'BUYER') return "Verified Buyer";
+    if (role === 'ADMIN') return "System Administrator";
+    return role;
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -54,7 +64,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           else if (r.includes('DELIVERY')) roleLabel = "Delivery Partner";
         } catch (e) {}
       }
-      setUserData({ name, role: roleLabel, location: "Sri Lanka" });
     }
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -81,7 +90,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   }
   
   return (
-    <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between border-b border-borderPrimary bg-backgroundSecondary/80 px-6 py-4 backdrop-blur-xl dark:bg-backgroundSecondary/90 sm:px-8">
+    <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between border-b border-borderPrimary bg-backgroundSecondary/80 px-6 py-4 backdrop-blur-xl dark:bg-backgroundSecondary/90 sm:px-8 print:hidden">
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -141,11 +150,14 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     <UserCircle className="h-10 w-10" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-textPrimary text-xl tracking-tight">{userData.name}</h3>
+                    <h3 className="font-bold text-textPrimary text-xl tracking-tight">{user?.name || 'User'}</h3>
                     <p className="text-sm font-medium text-textSecondary flex items-center mt-1">
-                      <Sprout className="h-3.5 w-3.5 mr-1 text-primary" /> {userData.role}
+                      <Sprout className="h-3.5 w-3.5 mr-1 text-primary" /> {getRoleDisplay()}
                     </p>
                   </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-textSecondary bg-backgroundSecondary/50 backdrop-blur-sm px-3 py-2 rounded-xl border border-borderPrimary w-fit relative z-10">
+                  <UserCircle className="h-3.5 w-3.5 text-primary" /> {user?.email || 'N/A'}
                 </div>
               </div>
 
@@ -167,7 +179,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               {/* Footer Actions */}
               <div className="p-3 bg-hoverPrimary/50 border-t border-borderPrimary">
                 <button 
-                  onClick={handleSignOut}
+                  onClick={() => { setIsProfileOpen(false); logout(); }}
                   className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-bold text-destructive bg-backgroundSecondary border border-destructive/20 hover:bg-destructive hover:text-backgroundSecondary transition-all shadow-sm active:scale-95"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out
