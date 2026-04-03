@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Loader2, MapPin, Save, Info, AlertTriangle, AlertCircle, CheckCircle, Thermometer, Droplets, Wind, CloudRain, Cloud, CloudSun } from "lucide-react";
-import axiosInstance from "../../util/axiosInstance";
-import { API_PATHS } from "../../util/apiPaths";
+import axiosInstance from "../../../util/axiosInstance";
+import { API_PATHS } from "../../../util/apiPaths";
 
 export default function MonitorPage() {
   const mapContainer = useRef<HTMLDivElement>(null);

@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import axiosInstance from "../../../util/axiosInstance";
-import { API_PATHS } from "../../../util/apiPaths";
+import axiosInstance from "../../../../util/axiosInstance";
+import { API_PATHS } from "../../../../util/apiPaths";
 
 interface FertilizerRequest {
   id: number;
@@ -114,7 +114,7 @@ export default function RequestDetailsPage() {
         </div>
         <h2 className="text-2xl font-bold text-textPrimary mb-2">Something went wrong</h2>
         <p className="text-textSecondary mb-8 max-w-md">{error || "The requested application could not be found."}</p>
-        <Link href="/dashboard/fertilizer-requests" className="px-6 py-3 bg-primary text-white rounded-xl font-bold flex items-center gap-2">
+        <Link href="/dashboard/farmer/fertilizer-requests" className="px-6 py-3 bg-primary text-white rounded-xl font-bold flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" /> Back to History
         </Link>
       </div>
@@ -127,7 +127,7 @@ export default function RequestDetailsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-12">
       <div className="max-w-5xl">
-        <Link href="/dashboard/fertilizer-requests" className="inline-flex items-center text-sm font-bold text-textSecondary hover:text-primary transition-colors mb-4 group">
+        <Link href="/dashboard/farmer/fertilizer-requests" className="inline-flex items-center text-sm font-bold text-textSecondary hover:text-primary transition-colors mb-4 group">
           <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" /> Back to History
         </Link>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

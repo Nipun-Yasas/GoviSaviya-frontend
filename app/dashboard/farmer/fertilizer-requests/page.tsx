@@ -16,8 +16,8 @@ import {
   ArrowLeft
 } from "lucide-react";
 import Link from "next/link";
-import axiosInstance from "../../util/axiosInstance";
-import { API_PATHS } from "../../util/apiPaths";
+import axiosInstance from "../../../util/axiosInstance";
+import { API_PATHS } from "../../../util/apiPaths";
 
 interface FertilizerRequest {
   id: number;
@@ -193,7 +193,7 @@ export default function MyFertilizerRequestsPage() {
 
                     <div className="lg:pl-8 lg:border-l border-borderPrimary flex items-center justify-between lg:justify-end gap-4 min-w-[140px]">
                       <div className="text-right flex-1 lg:flex-none">
-                        <Link href={`/dashboard/fertilizer-requests/${req.id}`} className="group/btn flex items-center text-sm font-bold text-primary hover:text-hover transition-colors">
+                        <Link href={`/dashboard/farmer/fertilizer-requests/${req.id}`} className="group/btn flex items-center text-sm font-bold text-primary hover:text-hover transition-colors">
                           View Details <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
                         </Link>
                       </div>
