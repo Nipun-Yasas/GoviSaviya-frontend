@@ -226,11 +226,10 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
         <div className="flex-1 overflow-y-auto py-6 px-4 no-visible-scrollbar">
           <ul className="space-y-2">
             {visibleLinks.map((link) => {
-              const isActive =
-                link.href === "/dashboard"
-                  ? pathname === "/dashboard"
-                  : pathname === link.href ||
-                    pathname.startsWith(`${link.href}/`);
+              const isDashboardHome = link.href === `/dashboard/${role}`;
+              const isActive = isDashboardHome 
+                ? pathname === link.href 
+                : pathname === link.href || pathname.startsWith(`${link.href}/`);
               const Icon = link.icon;
 
               return (
