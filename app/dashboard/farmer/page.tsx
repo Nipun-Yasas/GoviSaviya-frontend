@@ -46,14 +46,14 @@ export default function FarmerDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(res.data);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchDeliveryPersons = async () => {
     try {
       const res = await axios.get(`${API_DELIVERY}/persons`);
       setDeliveryPersons(res.data);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const updateOrderStatus = async (id: number, status: string) => {
@@ -63,7 +63,7 @@ export default function FarmerDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchOrders();
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const assignDelivery = async (orderId: number, deliveryPersonId: number) => {
@@ -76,18 +76,18 @@ export default function FarmerDashboard() {
       setAssigningOrder(null);
       fetchOrders();
       alert("Driver assigned!");
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const farmerStats = React.useMemo(() => {
     const ordersArray = Array.isArray(orders) ? orders : [];
-    
+
     const totalRevenue = ordersArray
       .filter(o => o?.status === 'DELIVERED')
       .reduce((acc, curr) => acc + (curr?.totalAmount || 0), 0);
-    
+
     const pendingOrdersCount = ordersArray.filter(o => o?.status === 'PENDING').length;
-    const activeOrdersCount = ordersArray.filter(o => 
+    const activeOrdersCount = ordersArray.filter(o =>
       o && (o.status === 'ACCEPTED' || o.status === 'ASSIGNED' || o.status === 'PICKED_UP')
     ).length;
 
@@ -141,7 +141,7 @@ export default function FarmerDashboard() {
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
-            
+
             <div className="p-8 space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar">
               <p className="text-sm font-bold text-textSecondary mb-4">Select a verified delivery person:</p>
               {deliveryPersons.map(person => (
@@ -155,7 +155,7 @@ export default function FarmerDashboard() {
                       <p className="text-[10px] text-textSecondary font-black uppercase tracking-widest">{person.vehicleType} • {person.vehicleNumber}</p>
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={() => assignDelivery(assigningOrder.id, person.id)}
                     className="p-3 bg-textPrimary text-backgroundSecondary rounded-xl hover:bg-primary transition-all scale-0 group-hover:scale-100 uppercase text-[10px] font-black"
                   >
@@ -181,7 +181,7 @@ export default function FarmerDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="inline-block px-2.5 py-1 rounded-full bg-white/20 text-xs font-semibold tracking-wider uppercase backdrop-blur-md">
-                   Weather
+                  Weather
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -248,8 +248,8 @@ export default function FarmerDashboard() {
                 <h2 className="text-xl font-bold text-textPrimary">Incoming Orders</h2>
                 <p className="text-sm text-textSecondary mt-1">Accept and coordinate logistics</p>
               </div>
-              <button 
-                onClick={() => window.location.href='/dashboard/farmer/orders'}
+              <button
+                onClick={() => window.location.href = '/dashboard/farmer/orders'}
                 className="text-sm font-bold text-primary bg-primary/10 px-4 py-2 rounded-xl hover:bg-primary/20 transition-all flex items-center gap-1"
               >
                 View All <ChevronRight className="w-4 h-4" />
@@ -272,7 +272,7 @@ export default function FarmerDashboard() {
                     </div>
                     <div className="flex gap-2">
                       {order.status === 'PENDING' && (
-                        <button 
+                        <button
                           onClick={() => updateOrderStatus(order.id, 'ACCEPTED')}
                           className="px-4 py-2 bg-primary text-white text-[10px] font-black uppercase rounded-lg hover:shadow-lg transition-all"
                         >
@@ -280,7 +280,7 @@ export default function FarmerDashboard() {
                         </button>
                       )}
                       {order.status === 'ACCEPTED' && order.deliveryRequired && (
-                        <button 
+                        <button
                           onClick={() => setAssigningOrder(order)}
                           className="px-4 py-2 bg-blue-500 text-white text-[10px] font-black uppercase rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
                         >
@@ -299,53 +299,53 @@ export default function FarmerDashboard() {
           </div>
 
           <div className="bg-backgroundSecondary border border-borderPrimary p-8 rounded-[2.5rem] shadow-sm">
-             <h2 className="text-xl font-bold text-textPrimary mb-8">Crop Monitoring</h2>
-             <div className="space-y-4">
-                {[
-                  { name: "Carrots - Sector A", stage: "Maturation", progress: 85, health: "Excellent", Icon: Vegan },
-                  { name: "Tomatoes - Sector C", stage: "Flowering", progress: 45, health: "Good", Icon: Apple },
-                ].map((crop, i) => (
-                  <div key={i} className="border border-borderPrimary rounded-2xl p-5 group hover:border-primary/30 transition-all">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-xl bg-hoverPrimary flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                          <crop.Icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-textPrimary">{crop.name}</h4>
-                          <span className="text-[10px] font-bold text-textSecondary uppercase tracking-widest">{crop.stage}</span>
-                        </div>
+            <h2 className="text-xl font-bold text-textPrimary mb-8">Crop Monitoring</h2>
+            <div className="space-y-4">
+              {[
+                { name: "Carrots - Sector A", stage: "Maturation", progress: 85, health: "Excellent", Icon: Vegan },
+                { name: "Tomatoes - Sector C", stage: "Flowering", progress: 45, health: "Good", Icon: Apple },
+              ].map((crop, i) => (
+                <div key={i} className="border border-borderPrimary rounded-2xl p-5 group hover:border-primary/30 transition-all">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-xl bg-hoverPrimary flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <crop.Icon className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-black text-primary px-3 py-1 bg-primary/10 rounded-lg">{crop.health}</span>
+                      <div>
+                        <h4 className="font-bold text-textPrimary">{crop.name}</h4>
+                        <span className="text-[10px] font-bold text-textSecondary uppercase tracking-widest">{crop.stage}</span>
+                      </div>
                     </div>
-                    <div className="w-full bg-borderPrimary/50 h-1.5 rounded-full overflow-hidden">
-                       <div className="bg-primary h-full rounded-full transition-all duration-1000" style={{ width: `${crop.progress}%` }}></div>
-                    </div>
+                    <span className="text-xs font-black text-primary px-3 py-1 bg-primary/10 rounded-lg">{crop.health}</span>
                   </div>
-                ))}
-             </div>
+                  <div className="w-full bg-borderPrimary/50 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-primary h-full rounded-full transition-all duration-1000" style={{ width: `${crop.progress}%` }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="space-y-8 h-fit">
-           <div className="bg-backgroundSecondary border border-borderPrimary p-8 rounded-[2.5rem] shadow-sm">
-              <h2 className="text-xl font-bold text-textPrimary mb-8">Live Market</h2>
-              <div className="space-y-5">
-                {[
-                  { crop: "Carrot", price: "Rs. 280/kg" },
-                  { crop: "Tomato", price: "Rs. 150/kg" },
-                  { crop: "Green Chili", price: "Rs. 850/kg" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-1">
-                    <span className="font-bold text-textPrimary">{item.crop}</span>
-                    <span className="text-sm font-black text-primary">{item.price}</span>
-                  </div>
-                ))}
-              </div>
-           </div>
-           <button className="w-full py-4 bg-textPrimary text-backgroundSecondary rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-primary transition-all shadow-lg">
-             View Full Analysis
-           </button>
+          <div className="bg-backgroundSecondary border border-borderPrimary p-8 rounded-[2.5rem] shadow-sm">
+            <h2 className="text-xl font-bold text-textPrimary mb-8">Live Market</h2>
+            <div className="space-y-5">
+              {[
+                { crop: "Carrot", price: "Rs. 280/kg" },
+                { crop: "Tomato", price: "Rs. 150/kg" },
+                { crop: "Green Chili", price: "Rs. 850/kg" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-between p-1">
+                  <span className="font-bold text-textPrimary">{item.crop}</span>
+                  <span className="text-sm font-black text-primary">{item.price}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button className="w-full py-4 bg-textPrimary text-backgroundSecondary rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-primary transition-all shadow-lg">
+            View Full Analysis
+          </button>
         </div>
       </div>
     </div>

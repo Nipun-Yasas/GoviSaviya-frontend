@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { 
-  Truck, 
-  MapPin, 
-  Clock, 
-  CheckCircle2, 
-  Package, 
-  User, 
+import {
+  Truck,
+  MapPin,
+  Clock,
+  CheckCircle2,
+  Package,
+  User,
   Phone,
   ArrowRight,
   Loader2,
@@ -80,18 +80,18 @@ export default function DeliveryDashboard() {
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
+
       {/* Header Panel */}
       <section className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 py-4">
         <div>
           <div className="flex items-center gap-3 mb-3">
-             <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
-                Command Center
-             </span>
-             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
+              Command Center
+            </span>
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-textPrimary leading-tight">
-             Delivery <span className="text-primary italic">Overview</span>
+            Delivery <span className="text-primary italic">Overview</span>
           </h1>
           <p className="text-textSecondary text-lg font-medium mt-2">
             Track your efficiency and earnings in real-time.
@@ -99,22 +99,22 @@ export default function DeliveryDashboard() {
         </div>
 
         <div className="flex gap-4">
-           <div className="bg-backgroundSecondary border border-borderPrimary p-6 rounded-[2rem] shadow-sm flex flex-col justify-center min-w-[160px]">
-              <p className="text-[10px] font-black uppercase tracking-widest text-textSecondary mb-1">Performance</p>
-              <h3 className="text-2xl font-black text-textPrimary">98.4%</h3>
-           </div>
-           <div className="bg-primary p-6 rounded-[2rem] shadow-xl text-backgroundSecondary flex flex-col justify-center min-w-[160px]">
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Daily Status</p>
-              <h3 className="text-2xl font-black">{activeJobs.length} Active</h3>
-           </div>
+          <div className="bg-backgroundSecondary border border-borderPrimary p-6 rounded-[2rem] shadow-sm flex flex-col justify-center min-w-[160px]">
+            <p className="text-[10px] font-black uppercase tracking-widest text-textSecondary mb-1">Performance</p>
+            <h3 className="text-2xl font-black text-textPrimary">98.4%</h3>
+          </div>
+          <div className="bg-primary p-6 rounded-[2rem] shadow-xl text-backgroundSecondary flex flex-col justify-center min-w-[160px]">
+            <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Daily Status</p>
+            <h3 className="text-2xl font-black">{activeJobs.length} Active</h3>
+          </div>
         </div>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
+
         {/* Main Content Area */}
         <div className="lg:col-span-8 space-y-10">
-          
+
           <div className="bg-backgroundSecondary border border-borderPrimary rounded-[3rem] p-10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-5">
               <Truck className="w-40 h-40" />
@@ -124,14 +124,14 @@ export default function DeliveryDashboard() {
               You currently have {activeJobs.length} shipments needing attention. Complete these to increase your daily earnings.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button 
-                onClick={() => window.location.href='/dashboard/delivery/jobs'}
+              <button
+                onClick={() => window.location.href = '/dashboard/delivery/jobs'}
                 className="px-8 py-4 bg-primary text-backgroundSecondary rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform"
               >
                 Go to Assignments
               </button>
-              <button 
-                onClick={() => window.location.href='/dashboard/delivery/earnings'}
+              <button
+                onClick={() => window.location.href = '/dashboard/delivery/earnings'}
                 className="px-8 py-4 border border-borderPrimary rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-hoverPrimary transition-all"
               >
                 Financials
@@ -168,31 +168,31 @@ export default function DeliveryDashboard() {
 
         {/* Stats Column */}
         <div className="lg:col-span-4 space-y-8">
-           <div className="bg-backgroundSecondary border border-borderPrimary p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
-              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-textSecondary mb-8 flex items-center gap-2">
-                 <TrendingUp className="w-4 h-4 text-primary" /> Daily Revenue
-              </p>
-              <div className="space-y-8">
-                 <div>
-                    <h3 className="text-5xl font-black text-textPrimary tracking-tighter mb-2">{completedJobs.length}</h3>
-                    <p className="text-sm font-bold text-textSecondary">Completed Deliveries</p>
-                 </div>
-                 <div className="h-px bg-borderPrimary w-full"></div>
-                 <div>
-                    <h3 className="text-4xl font-black text-textPrimary tracking-tighter mb-2">
-                       Rs. {completedJobs.length * 450}
-                    </h3>
-                    <p className="text-sm font-bold text-textSecondary">Estimated Commissions</p>
-                 </div>
+          <div className="bg-backgroundSecondary border border-borderPrimary p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-textSecondary mb-8 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-primary" /> Daily Revenue
+            </p>
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-5xl font-black text-textPrimary tracking-tighter mb-2">{completedJobs.length}</h3>
+                <p className="text-sm font-bold text-textSecondary">Completed Deliveries</p>
               </div>
-           </div>
+              <div className="h-px bg-borderPrimary w-full"></div>
+              <div>
+                <h3 className="text-4xl font-black text-textPrimary tracking-tighter mb-2">
+                  Rs. {completedJobs.length * 450}
+                </h3>
+                <p className="text-sm font-bold text-textSecondary">Estimated Commissions</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {error && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-600 text-white px-10 py-5 rounded-full shadow-2xl flex items-center gap-4 z-50">
-           <AlertCircle className="w-6 h-6" />
-           <p className="font-bold">{error}</p>
+          <AlertCircle className="w-6 h-6" />
+          <p className="font-bold">{error}</p>
         </div>
       )}
     </div>
